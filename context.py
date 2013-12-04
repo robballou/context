@@ -5,7 +5,13 @@ import os
 import sys
 
 class Command(object):
-    pass
+    def default(self, context, args):
+        pass
+
+    def run(self, context, args):
+        if not args.subcommand:
+            return self.default(context, args)
+        return False
 
 class Contexts(object):
     """
