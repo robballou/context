@@ -21,7 +21,11 @@ class Contexts(object):
     class Git(Command):
         """Git commands"""
         def run(self, context, args):
-            print "cd %s" % os.path.expanduser(context['git'])
+            git_directory = os.path.expanduser(context['git'])
+            if not args.subcommand:
+                print "cd %s" % git_directory
+            else:
+                print "pushd %s && git %s && popd" % (git_directory, " ".join(args.subcommand))
 
     class Vagrant(Command):
         """Vagrant commands"""
@@ -38,6 +42,14 @@ class Contexts(object):
                 print "pushd %s && vagrant ssh && popd" % vagrant_directory
             elif args.subcommand[0] == 'status':
                 print "pushd %s && vagrant status && popd" % vagrant_directory
+
+    class Web(Command):
+        def default(self, context, args):
+            print "cd %s" % context['web']
+
+    class Www(Command):
+        def default(self, context, args):
+            print "open %s" % context['www']
 
     def __init__(self, data=None):
         self.contexts = {}
