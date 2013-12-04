@@ -50,10 +50,11 @@ Configure some contexts:
 
 ## Configuration options
 
-* git
-* web
-* www
-* vagrant
+* git: string
+* links: dict
+* web: string
+* www: string
+* vagrant: string
 
 ## Commands
 
@@ -64,6 +65,18 @@ Defaults to changing to the git directory.
 You can also now pass arguments to git that will run in that folder. For example, `context git merge dev` will run:
 
     pushd [git directory] && git merge dev && popd
+
+### Links
+
+Allows you to save links and open them: `context links link_name`
+
+A better example, if you have this in your context configuration:
+
+    "links": {
+        "dev": "http://dev.example.com"
+    }
+
+You can run: `context links dev` to open that in a browser.
 
 ### Vagrant
 
