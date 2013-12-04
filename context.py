@@ -4,17 +4,21 @@ import json
 import os
 import sys
 
-from sh import cd, vagrant
-
 class Command(object):
     pass
 
 class Contexts(object):
+    """
+    Global contexts class
+    """
+
     class Git(Command):
+        """Git commands"""
         def run(self, context, args):
             print "cd %s" % os.path.expanduser(context['git'])
 
     class Vagrant(Command):
+        """Vagrant commands"""
         def run(self, context, args):
             vagrant_directory = os.path.expanduser(context['vagrant'])
             # by default, go to the vagrant directory
@@ -75,6 +79,11 @@ class Contexts(object):
         fp.close()
 
 def context(args):
+    """
+    Context functionality from __main__
+
+    This will get the global contexts object and run some basic system commands
+    """
     contexts = load_contexts()
     if args.command == 'switch' and args.subcommand and not contexts.get(args.subcommand[0]):
         print "Could not find context: %s" % (args.subcommand[0])
