@@ -48,11 +48,22 @@ Configure some contexts:
     	}
     }
 
+## Configuration options
+
+* git
+* web
+* www
+* vagrant
+
 ## Commands
 
 ### Git
 
 Defaults to changing to the git directory.
+
+You can also now pass arguments to git that will run in that folder. For example, `context git merge dev` will run:
+
+    pushd [git directory] && git merge dev && popd
 
 ### Vagrant
 
@@ -63,3 +74,11 @@ Defaults to changing to the vagrant directory.
 * `down` or `halt` (turn off vagrant)
 * `up` (turn on vagrant)
 * `ssh` (ssh into vagrant)
+
+### Web
+
+Goes to the defined `web` folder.
+
+### Www
+
+Goes to the defined website in your browser.
