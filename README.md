@@ -23,9 +23,11 @@ Switch project contexts easily, from anywhere. Example usage:
     # remove the "current" context
     $ context clear
 
+Basically this is a commandline tool that allows you to use the same commands in different folders or on different assets.
+
 ## Install
 
-Clone this repo where you store your git files:
+This library requires Python 2.7. Clone this repo where you store your git files:
 
     cd ~/git
     git clone [path]
