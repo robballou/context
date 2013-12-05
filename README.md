@@ -58,6 +58,10 @@ Configure some contexts:
 
 ## Commands
 
+### Clear
+
+Clears the current context. Currently this actually just removes `~/.contexts_data`. This behavior will likely become smarter if new data gets stored in that file.
+
 ### Git
 
 **Alias:** g
@@ -81,6 +85,10 @@ A better example, if you have this in your context configuration:
     }
 
 You can run: `context links dev` to open that in a browser.
+
+### Switch
+
+Switches contexts used by this command. The command remembers this by storing this in `~/.contexts_data` as JSON data.
 
 ### Vagrant
 
