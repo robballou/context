@@ -60,6 +60,8 @@ Configure some contexts:
 
 ### Git
 
+**Alias:** g
+
 Defaults to changing to the git directory.
 
 You can also now pass arguments to git that will run in that folder. For example, `context git merge dev` will run:
@@ -67,6 +69,8 @@ You can also now pass arguments to git that will run in that folder. For example
     pushd [git directory] && git merge dev && popd
 
 ### Links
+
+**Alias:** l
 
 Allows you to save links and open them: `context links link_name`
 
@@ -80,6 +84,8 @@ You can run: `context links dev` to open that in a browser.
 
 ### Vagrant
 
+**Alias:** v
+
 Defaults to changing to the vagrant directory.
 
 #### Subcommands
@@ -89,6 +95,8 @@ Defaults to changing to the vagrant directory.
 * `ssh` (ssh into vagrant)
 
 ### Web
+
+**Alias:** w
 
 Goes to the defined `web` folder.
 
