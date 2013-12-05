@@ -62,6 +62,10 @@ Configure some contexts:
 
 Clears the current context. Currently this actually just removes `~/.contexts_data`. This behavior will likely become smarter if new data gets stored in that file.
 
+### Current
+
+Outputs the current context. If there isn't a context selected, it will output: `None`.
+
 ### Git
 
 **Alias:** g
