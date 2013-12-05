@@ -3,69 +3,51 @@ import argparse
 import json
 import os
 import sys
-
-class Command(object):
-    def default(self, context, args):
-        pass
-
-    def run(self, context, args):
-        if not args.subcommand:
-            return self.default(context, args)
-        return False
+import importlib
 
 class Contexts(object):
     """
     Global contexts class
     """
 
-    class Git(Command):
-        """Git commands"""
-        def run(self, context, args):
-            git_directory = os.path.expanduser(context['git'])
-            if not args.subcommand:
-                print "cd %s" % git_directory
-            else:
-                print "pushd %s && git %s && popd" % (git_directory, " ".join(args.subcommand))
-
-    class Links(Command):
-        def run(self, context, args):
-            if not args.subcommand:
-                print "echo Please enter a link name: context link name"
-            elif args.subcommand[0] in context['links']:
-                print "open %s" % context['links'][args.subcommand[0]]
-            else:
-                print "echo Link not found: %s" % args.subcommand[0]
-
-    class Vagrant(Command):
-        """Vagrant commands"""
-        def run(self, context, args):
-            vagrant_directory = os.path.expanduser(context['vagrant'])
-            # by default, go to the vagrant directory
-            if not args.subcommand:
-                print "cd %s" % vagrant_directory
-            elif args.subcommand[0] == 'down' or args.subcommand[0] == 'halt':
-                print "pushd %s && vagrant halt && popd" % vagrant_directory
-            elif args.subcommand[0] == 'up':
-                print "pushd %s && vagrant up && popd" % vagrant_directory
-            elif args.subcommand[0] == 'ssh':
-                print "pushd %s && vagrant ssh && popd" % vagrant_directory
-            elif args.subcommand[0] == 'status':
-                print "pushd %s && vagrant status && popd" % vagrant_directory
-
-    class Web(Command):
-        def default(self, context, args):
-            print "cd %s" % context['web']
-
-    class Www(Command):
-        def default(self, context, args):
-            print "open %s" % context['www']
-
+    #
+    # METHODS
+    #
     def __init__(self, data=None):
         self.contexts = {}
         self.current_context = None
+        self.registered_commands = {}
+        self.command_aliases = {}
 
         if data:
             self.parse(data)
+
+        # load commands
+        commands = [
+            "context_commands.git",
+            "context_commands.links",
+            "context_commands.vagrant",
+            "context_commands.web",
+            "context_commands.www",
+        ]
+
+        for command in commands:
+            command_name = command.split(".")[-1]
+            class_name = command_name.title()
+
+            try:
+                module = importlib.import_module(command)
+                this_command = getattr(module, class_name)
+                self.registered_commands[command_name] = this_command
+
+                # try to register any aliases
+                try:
+                    self.command_aliases[this_command.alias] = command_name
+                except AttributeError:
+                    pass
+            except ImportError, e:
+                sys.stderr.write("Could not find command module: %s (%s)\n" % (command, e))
+                sys.exit(1)
 
         contexts_data_file = self.get_contexts_data_file()
         if os.path.exists(contexts_data_file):
@@ -77,6 +59,10 @@ class Contexts(object):
         os.unlink(self.get_contexts_data_file())
 
     def get(self, context=None):
+        # contexts can't start with "_"
+        if context.startswith('_'):
+            return False
+
         if not context and self.current_context:
             return self.contexts[self.current_context]
 
@@ -87,12 +73,31 @@ class Contexts(object):
     def get_contexts_data_file(self):
         return os.path.expanduser('~/.contexts-data')
 
+    def help(self):
+        """
+        Display some usage and command information
+        """
+        sys.stderr.write("Usage: context [command] [subcommand ...]\n\n")
+        sys.stderr.write("Commands:\n")
+        commands = self.registered_commands.keys()
+        commands.sort()
+        for command in commands:
+            this_command = command
+            try:
+                this_command = "%s (%s)" % (this_command, self.registered_commands[command].alias)
+            except AttributeError:
+                pass
+            sys.stderr.write("\t%s\n" % this_command)
+
     def parse(self, data):
         self.contexts = json.loads(data)
 
     def run_command(self, command, args):
-        command_class = command.title().replace(" ", "")
-        command_object = getattr(self, command_class)()
+        if command in self.registered_commands:
+            this_command = self.registered_commands[command]
+        elif command in self.command_aliases:
+            this_command = self.registered_commands[self.command_aliases[command]]
+        command_object = this_command()
         command_object.run(self.get(self.current_context), args)
 
     def switch(self, context):
@@ -112,6 +117,11 @@ def context(args):
     This will get the global contexts object and run some basic system commands
     """
     contexts = load_contexts()
+
+    if not args.command:
+        contexts.help()
+        sys.exit(0)
+
     if args.command == 'switch' and args.subcommand and not contexts.get(args.subcommand[0]):
         print "Could not find context: %s" % (args.subcommand[0])
         sys.exit(1)
@@ -136,7 +146,7 @@ def load_contexts():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Context switcher')
     # add arguments
-    parser.add_argument('command', help='Choose your command')
+    parser.add_argument('command', help='Choose your command', nargs="?")
     parser.add_argument('subcommand', help='Choose your sub commands', nargs="*")
     args = parser.parse_args()
     context(args)
