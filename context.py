@@ -25,6 +25,7 @@ class Contexts(object):
         # load commands
         commands = [
             "context_commands.bundler",
+            "context_commands.current",
             "context_commands.git",
             "context_commands.links",
             "context_commands.vagrant",
@@ -102,7 +103,7 @@ class Contexts(object):
             sys.stderr.write("Invalid command: %s\n" % command)
             sys.exit(1)
         command_object = this_command()
-        command_object.run(self.get(self.current_context), args)
+        command_object.run(self.get(self.current_context), args, self.current_context)
 
     def switch(self, context):
         if not self.get(context):
@@ -132,8 +133,6 @@ def context(args):
 
     if args.command == 'switch':
         contexts.switch(args.subcommand[0])
-    elif args.command == 'current':
-        print "echo %s" % contexts.current_context
     elif args.command == 'clear':
         contexts.clear()
     else:

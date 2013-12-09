@@ -5,7 +5,7 @@ class Git(Command):
     """Git commands"""
     alias = 'g'
 
-    def run(self, context, args):
+    def run(self, context, args, current_context):
         git_directory = os.path.expanduser(context['git'])
         if not args.subcommand:
             print "cd %s" % git_directory
