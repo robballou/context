@@ -103,7 +103,7 @@ class Contexts(object):
             sys.stderr.write("Invalid command: %s\n" % command)
             sys.exit(1)
         command_object = this_command()
-        command_object.run(self.get(self.current_context), args, self.current_context)
+        command_object.run(self.get(self.current_context), args, self)
 
     def switch(self, context):
         if not self.get(context):

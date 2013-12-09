@@ -3,10 +3,14 @@ import sys
 from context_commands import Command
 
 class Bundler(Command):
-    """Bundler commands"""
+    """
+    Bundler commands
+
+    Passes commands up to bundler.
+    """
     alias = 'b'
 
-    def run(self, context, args, current_context):
+    def run(self, context, args, contexts):
         theme_directory = os.path.expanduser(context['theme'])
         if not args.subcommand:
             self.error_message("No default command")

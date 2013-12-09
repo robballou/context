@@ -2,7 +2,7 @@ from context_commands import Command
 
 class Links(Command):
     alias = 'l'
-    def run(self, context, args, current_context):
+    def run(self, context, args, contexts):
         if not args.subcommand:
             print "echo Please enter a link name: context link name"
         elif args.subcommand[0] in context['links']:

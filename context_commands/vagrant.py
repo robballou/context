@@ -4,7 +4,7 @@ from context_commands import Command
 class Vagrant(Command):
     """Vagrant commands"""
     alias = 'v'
-    def run(self, context, args, current_context):
+    def run(self, context, args, contexts):
         vagrant_directory = os.path.expanduser(context['vagrant'])
         # by default, go to the vagrant directory
         if not args.subcommand:
