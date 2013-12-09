@@ -38,6 +38,7 @@ class Contexts(object):
         # load commands
         commands = [
             "context_commands.bundler",
+            "context_commands.clear",
             "context_commands.current",
             "context_commands.git",
             "context_commands.links",
@@ -70,9 +71,6 @@ class Contexts(object):
             if 'current_context' in contexts_data:
                 self.current_context = contexts_data['current_context']
 
-    def clear(self):
-        os.unlink(self.get_contexts_data_file())
-
     def get(self, context=None):
         # contexts can't start with "_"
         if context.startswith('_'):
@@ -86,7 +84,7 @@ class Contexts(object):
         return False
 
     def get_contexts_data_file(self):
-        return os.path.expanduser('~/.contexts-data')
+        return os.path.expanduser(self.data_file)
 
     def help(self):
         """
