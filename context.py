@@ -24,6 +24,7 @@ class Contexts(object):
 
         # load commands
         commands = [
+            "context_commands.bundler",
             "context_commands.git",
             "context_commands.links",
             "context_commands.vagrant",
@@ -97,6 +98,9 @@ class Contexts(object):
             this_command = self.registered_commands[command]
         elif command in self.command_aliases:
             this_command = self.registered_commands[self.command_aliases[command]]
+        else:
+            sys.stderr.write("Invalid command: %s\n" % command)
+            sys.exit(1)
         command_object = this_command()
         command_object.run(self.get(self.current_context), args)
 
