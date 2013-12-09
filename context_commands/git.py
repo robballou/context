@@ -8,8 +8,10 @@ class Git(Command):
     def run(self, context, args, contexts):
         git_directory = os.path.expanduser(context['git'])
         if not args.subcommand:
-            print "cd %s" % git_directory
+            if os.getcwd() != git_directory:
+                print "cd %s" % git_directory
         elif args.subcommand and args.subcommand[0] == 'edit':
             print "$EDITOR %s" % git_directory
         else:
-            print "pushd %s && git %s && popd" % (git_directory, " ".join(args.subcommand))
+            # pass the command up to git, but run it in the correct context
+            print self.make_command_context_specific("git %s" % " ".join(args.subcommand), git_directory)

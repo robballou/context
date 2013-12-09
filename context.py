@@ -65,6 +65,7 @@ class Contexts(object):
                 sys.stderr.write("Could not find command module: %s (%s)\n" % (command, e))
                 sys.exit(1)
 
+        # load the switchers' data file
         contexts_data_file = self.get_contexts_data_file()
         if os.path.exists(contexts_data_file):
             contexts_data = json.loads(open(contexts_data_file, 'r').read())
@@ -72,6 +73,10 @@ class Contexts(object):
                 self.current_context = contexts_data['current_context']
 
     def get(self, context=None):
+        if not context:
+            sys.stderr.write("Cannot get context\n")
+            sys.exit(1)
+
         # contexts can't start with "_"
         if context.startswith('_'):
             return False
@@ -92,6 +97,8 @@ class Contexts(object):
         """
         sys.stderr.write("Usage: context [command] [subcommand ...]\n\n")
         sys.stderr.write("Commands:\n")
+
+        # show registered commands
         commands = self.registered_commands.keys()
         commands.sort()
         for command in commands:

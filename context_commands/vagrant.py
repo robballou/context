@@ -10,10 +10,10 @@ class Vagrant(Command):
         if not args.subcommand:
             print "cd %s" % vagrant_directory
         elif args.subcommand[0] == 'down' or args.subcommand[0] == 'halt':
-            print "pushd %s && vagrant halt && popd" % vagrant_directory
+            print self.make_command_context_specific("vagrant halt", vagrant_directory)
         elif args.subcommand[0] == 'up':
-            print "pushd %s && vagrant up && popd" % vagrant_directory
+            print self.make_command_context_specific("vagrant up", vagrant_directory)
         elif args.subcommand[0] == 'ssh':
-            print "pushd %s && vagrant ssh && popd" % vagrant_directory
+            print self.make_command_context_specific("vagrant ssh", vagrant_directory)
         elif args.subcommand[0] == 'status':
-            print "pushd %s && vagrant status && popd" % vagrant_directory
+            print self.make_command_context_specific("vagrant status", vagrant_directory)
