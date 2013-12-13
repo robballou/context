@@ -10,7 +10,7 @@ class Command(object):
 
     def make_command_context_specific(self, command, directory):
         if os.getcwd() != directory:
-            command = "pushd %s && %s && popd" % (directory, command)
+            command = "pushd %s; %s; popd" % (directory, command)
         return command
 
     def run(self, context, args, contexts):

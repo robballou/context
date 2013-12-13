@@ -16,4 +16,4 @@ class Bundler(Command):
             self.error_message("No default command")
             sys.exit(1)
         else:
-            print "pushd %s && bundle exec %s && popd" % (theme_directory, " ".join(args.subcommand))
+            print self.make_command_context_specific(" ".join(args.subcommand), theme_directory)
