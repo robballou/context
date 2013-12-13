@@ -110,7 +110,11 @@ class Contexts(object):
             sys.stderr.write("\t%s\n" % this_command)
 
     def parse(self, data):
-        self.contexts = json.loads(data)
+        try:
+            self.contexts = json.loads(data)
+        except Exception, e:
+            sys.stderr.write("Error: Could not load contexts: %s\n" % e)
+            sys.exit(1)
 
     def run_command(self, command, args):
         if command in self.registered_commands:
@@ -173,5 +177,6 @@ if __name__ == '__main__':
     parser.add_argument('subcommand', help='Choose your sub commands', nargs="*")
     parser.add_argument('--contexts', '-c', help="The contexts data file", action="store", dest="contexts_file", default="~/.contexts")
     parser.add_argument('--data', '-d', help="The contexts library data file", action="store", dest="data_file", default="~/.contexts_data")
+    parser.add_argument('--verbose', '-v', help="Show more information about process", dest="verbose", action="store_true", default=False)
     args = parser.parse_args()
     context(args)
