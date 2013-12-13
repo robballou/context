@@ -13,6 +13,9 @@ class Web(Command):
         if return_value:
             return
 
-        if args.subcommand and args.subcommand[0] == 'edit':
-            print "$EDITOR %s" % os.path.expanduser(context['web'])
+        if args.subcommand:
+            if args.subcommand[0] == 'edit':
+                print "$EDITOR %s" % os.path.expanduser(context['web'])
+            elif args.subcommand[0] == 'theme':
+                print "cd %s" % os.path.expanduser(context['theme'])
 
