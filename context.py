@@ -39,6 +39,7 @@ class Contexts(object):
         commands = [
             "context_commands.bundler",
             "context_commands.clear",
+            "context_commands.contexts",
             "context_commands.current",
             "context_commands.git",
             "context_commands.links",
