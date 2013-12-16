@@ -153,8 +153,6 @@ def context(args):
     if args.list:
         args.command = 'contexts'
 
-    print sys.stderr.write("%s" % args)
-
     if args.command == 'switch' and args.subcommand and not contexts.get(args.subcommand[0]):
         print "Could not find context: %s" % (args.subcommand[0])
         sys.exit(1)
