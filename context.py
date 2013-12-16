@@ -150,6 +150,11 @@ def context(args):
         contexts.help()
         sys.exit(0)
 
+    if args.list:
+        args.command = 'contexts'
+
+    print sys.stderr.write("%s" % args)
+
     if args.command == 'switch' and args.subcommand and not contexts.get(args.subcommand[0]):
         print "Could not find context: %s" % (args.subcommand[0])
         sys.exit(1)
@@ -179,5 +184,6 @@ if __name__ == '__main__':
     parser.add_argument('--contexts', '-c', help="The contexts data file", action="store", dest="contexts_file", default="~/.contexts")
     parser.add_argument('--data', '-d', help="The contexts library data file", action="store", dest="data_file", default="~/.contexts_data")
     parser.add_argument('--verbose', '-v', help="Show more information about process", dest="verbose", action="store_true", default=False)
+    parser.add_argument('--list', '-l', help="List contexts", dest="list", action="store_true", default="contexts")
     args = parser.parse_args()
     context(args)

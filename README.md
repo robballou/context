@@ -54,15 +54,26 @@ Configure some contexts:
 
 * git: string
 * links: dict
+* theme: string
 * web: string
 * www: string
 * vagrant: string
 
 ## Commands
 
+### Bundler
+
+The bundler command allows you to execute a command with Bundler within the `theme` directory for your context. Example:
+
+    context bundler exec compass watch
+
 ### Clear
 
 Clears the current context. Currently this actually just removes `~/.contexts_data`. This behavior will likely become smarter if new data gets stored in that file.
+
+### Contexts
+
+List out the available contexts
 
 ### Current
 
@@ -113,6 +124,10 @@ Defaults to changing to the vagrant directory.
 **Alias:** w
 
 Goes to the defined `web` folder.
+
+#### Subcommands
+
+* `theme` (goto the theme folder)
 
 ### Www
 
