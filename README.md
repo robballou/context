@@ -67,7 +67,7 @@ Configure some contexts:
 
 ## Loading Custom Commands
 
-You can add custom commands with a "__commands" entry:
+You can add custom commands with a `__commands` entry:
 
     # ~/.contexts
     {
