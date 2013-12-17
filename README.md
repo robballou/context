@@ -31,7 +31,7 @@ context vagrant stop
 context clear
 ```
 
-Basically this is a commandline tool that allows you to use the same commands in different folders or on different assets.
+Basically this is a command line tool that allows you to use the same commands in different folders or on different assets. It doesn't require you to be in a specific location to run commands that may require you be setup in a specific location (like vagrant, compass, etc.). Switching contexts lets you change to a different set of definitions.
 
 ## Install
 
