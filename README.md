@@ -2,14 +2,20 @@
 
 Switch project contexts easily, from anywhere. Example usage:
 
+    # check the current context
     $ context current
     None
+    
+    # switch contexts
     $ context switch my_project
     $ context current
     my_project
 
     # change to git directory
     $ context git
+    
+    # launch the web folder in your editor
+    $ context web edit
 
     # change to vagrant directory
     $ context vagrant
@@ -107,7 +113,11 @@ Defaults to changing to the git directory.
 
 You can also now pass arguments to git that will run in that folder. For example, `context git merge dev` will run:
 
-    pushd [git directory] && git merge dev && popd
+    pushd [git directory]; git merge dev; popd
+
+#### Subcommands
+
+* `edit` (launch the git folder in your `$EDITOR`)
 
 ### Links
 
@@ -147,6 +157,7 @@ Goes to the defined `web` folder.
 
 #### Subcommands
 
+* `edit` (launch the web folder in your `$EDITOR`)
 * `theme` (goto the theme folder)
 
 ### Www
