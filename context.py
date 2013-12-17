@@ -87,6 +87,7 @@ class Contexts(object):
                 self.current_context = contexts_data['current_context']
 
     def get(self, context=None):
+        """Get a specific context"""
         if not context:
             sys.stderr.write("Cannot get context\n")
             sys.exit(1)
@@ -103,6 +104,7 @@ class Contexts(object):
         return False
 
     def get_contexts_data_file(self):
+        """Return the path for the data file"""
         return os.path.expanduser(self.data_file)
 
     def help(self):
@@ -124,6 +126,9 @@ class Contexts(object):
             sys.stderr.write("\t%s\n" % this_command)
 
     def parse(self, data):
+        """
+        Parse/load the contexts data
+        """
         try:
             self.contexts = json.loads(data)
         except Exception, e:
@@ -135,17 +140,27 @@ class Contexts(object):
                 self.configured_commands = self.contexts[context]
 
     def run_command(self, command, args):
+        """
+        Run the specified command
+        """
+        # check if the command is registered
         if command in self.registered_commands:
             this_command = self.registered_commands[command]
+        # check if this is an alias of a registered command
         elif command in self.command_aliases:
             this_command = self.registered_commands[self.command_aliases[command]]
         else:
             sys.stderr.write("Invalid command: %s\n" % command)
             sys.exit(1)
+
+        # run the command
         command_object = this_command()
         command_object.run(self.get(self.current_context), args, self)
 
     def switch(self, context):
+        """
+        Switch contexts to the provided context key
+        """
         if not self.get(context):
             raise Exception('Invalid context: %s' % context)
 
@@ -182,6 +197,7 @@ def context(args):
         contexts.run_command(args.command, args)
 
 def load_contexts(data_file="~/.contexts", options={}):
+    """Load the contexts file and create the Contexts object"""
     data_file = os.path.expanduser(data_file)
     data = None
 

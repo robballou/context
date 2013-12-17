@@ -100,6 +100,8 @@ class Current(Command):
         self.error_message(contexts.current_context)
 ```
 
+To execute commands on the shell, print them out to the `stdout`. If you want to print informational data, print that out to `stderr` (`self.error_message` above is just a method that writes to `stderr` for you).
+
 ## Commands
 
 ### Bundler
