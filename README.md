@@ -2,32 +2,34 @@
 
 Switch project contexts easily, from anywhere. Example usage:
 
-    # check the current context
-    $ context current
-    None
+```bash
+# check the current context
+context current
+None
 
-    # switch contexts
-    $ context switch my_project
-    $ context current
-    my_project
+# switch contexts
+context switch my_project
+context current
+my_project
 
-    # change to git directory
-    $ context git
+# change to git directory
+context git
 
-    # launch the web folder in your editor
-    $ context web edit
+# launch the web folder in your editor
+context web edit
 
-    # change to vagrant directory
-    $ context vagrant
+# change to vagrant directory
+context vagrant
 
-    # start vagrant
-    $ context vagrant start
+# start vagrant
+context vagrant start
 
-    # stop vagrant
-    $ context vagrant stop
+# stop vagrant
+context vagrant stop
 
-    # remove the "current" context
-    $ context clear
+# remove the "current" context
+context clear
+```
 
 Basically this is a commandline tool that allows you to use the same commands in different folders or on different assets.
 
@@ -48,13 +50,14 @@ Create a JSON document with your configuration:
 
 Configure some contexts:
 
-    # ~/.contexts
-    {
-        "my_project": {
-            "git": "~/git/my_project",
-            "vagrant": "~/git/my_project/vagrant"
-        }
+```json
+{
+    "my_project": {
+        "git": "~/git/my_project",
+        "vagrant": "~/git/my_project/vagrant"
     }
+}
+```
 
 ## Context Configuration options
 
@@ -69,16 +72,17 @@ Configure some contexts:
 
 You can add custom commands with a `__commands` entry:
 
-    # ~/.contexts
-    {
-        "__commands": [
-            "example_module.example_command"
-        ],
-        "my_project": {
-            "git": "~/git/my_project",
-            "vagrant": "~/git/my_project/vagrant"
-        }
+```json
+{
+    "__commands": [
+        "example_module.example_command"
+    ],
+    "my_project": {
+        "git": "~/git/my_project",
+        "vagrant": "~/git/my_project/vagrant"
     }
+}
+```
 
 The example above will add the example command to the list of available context commands. Command classes should inherit the `Command` class (or a derivative when they exist). The `Command` class has two main methods:
 
@@ -87,12 +91,14 @@ The example above will add the example command to the list of available context 
 
 A very simple example:
 
-    from context_commands import Command
+```python
+from context_commands import Command
 
-    class Current(Command):
-        """Display the current context"""
-        def default(self, context, args, contexts):
-            self.error_message(contexts.current_context)
+class Current(Command):
+    """Display the current context"""
+    def default(self, context, args, contexts):
+        self.error_message(contexts.current_context)
+```
 
 ## Commands
 
@@ -122,7 +128,9 @@ Defaults to changing to the git directory.
 
 You can also now pass arguments to git that will run in that folder. For example, `context git merge dev` will run:
 
-    pushd [git directory]; git merge dev; popd
+```bash
+pushd [git directory]; git merge dev; popd
+```
 
 #### Subcommands
 
@@ -136,9 +144,11 @@ Allows you to save links and open them: `context links link_name`
 
 A better example, if you have this in your context configuration:
 
-    "links": {
-        "dev": "http://dev.example.com"
-    }
+```json
+"links": {
+    "dev": "http://dev.example.com"
+}
+```
 
 You can run: `context links dev` to open that in a browser.
 
