@@ -44,13 +44,13 @@ Configure some contexts:
 
     # ~/.contexts
     {
-    	"my_project": {
-    		"git": "~/git/my_project",
-    		"vagrant": "~/git/my_project/vagrant"
-    	}
+        "my_project": {
+            "git": "~/git/my_project",
+            "vagrant": "~/git/my_project/vagrant"
+        }
     }
 
-## Configuration options
+## Context Configuration options
 
 * git: string
 * links: dict
@@ -58,6 +58,26 @@ Configure some contexts:
 * web: string
 * www: string
 * vagrant: string
+
+## Loading Custom Commands
+
+You can add custom commands with a "__commands" entry:
+
+    # ~/.contexts
+    {
+        "__commands": [
+            "example_module.example_command"
+        ],
+        "my_project": {
+            "git": "~/git/my_project",
+            "vagrant": "~/git/my_project/vagrant"
+        }
+    }
+
+The example above will add the example command to the list of available context commands. Command classes should inherit the `Command` class (or a derivative when they exist). The `Command` class has two main methods:
+
+1. **`run`:** This method is called for any subcommand. You can add this to handle specific subcommands or to even handle the default.
+2. **`default`:** Useful when your command does not have any subcommands, the default command is called when no subcommands are issued.
 
 ## Commands
 
