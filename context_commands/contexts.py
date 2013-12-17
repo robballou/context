@@ -1,12 +1,15 @@
-import sys
 from context_commands import Command
 
 class Contexts(Command):
-    """List contexts"""
+    """List loaded contexts"""
     def default(self, context, args, contexts):
         self.error_message("Contexts:")
         context_keys = []
         for context_key in contexts.contexts:
+            # skip contexts that start with "__" as those are
+            # "system" entries
+            if context_key.startswith('__'):
+                continue
             context_keys.append(context_key)
 
         context_keys.sort()

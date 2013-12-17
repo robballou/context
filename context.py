@@ -14,10 +14,20 @@ class Contexts(object):
     # METHODS
     #
     def __init__(self, data=None, **kwargs):
+        # the contexts configuration data
         self.contexts = {}
+
+        # the key of the current context
         self.current_context = None
+
+        # commands that have been processed and are ready to run
         self.registered_commands = {}
+
+        # stores a map of aliases to commands
         self.command_aliases = {}
+
+        # holds the commands configured in the user's .contexts file
+        self.configured_commands = None
 
         # settings management
         defaults = {
@@ -47,6 +57,9 @@ class Contexts(object):
             "context_commands.web",
             "context_commands.www",
         ]
+
+        if self.configured_commands:
+            commands = commands + self.configured_commands
 
         for command in commands:
             command_name = command.split(".")[-1]
@@ -116,6 +129,10 @@ class Contexts(object):
         except Exception, e:
             sys.stderr.write("Error: Could not load contexts: %s\n" % e)
             sys.exit(1)
+
+        for context in self.contexts:
+            if context == '__commands':
+                self.configured_commands = self.contexts[context]
 
     def run_command(self, command, args):
         if command in self.registered_commands:
