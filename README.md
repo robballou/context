@@ -5,7 +5,7 @@ Switch project contexts easily, from anywhere. Example usage:
     # check the current context
     $ context current
     None
-    
+
     # switch contexts
     $ context switch my_project
     $ context current
@@ -13,7 +13,7 @@ Switch project contexts easily, from anywhere. Example usage:
 
     # change to git directory
     $ context git
-    
+
     # launch the web folder in your editor
     $ context web edit
 
@@ -84,6 +84,15 @@ The example above will add the example command to the list of available context 
 
 1. **`run`:** This method is called for any subcommand. You can add this to handle specific subcommands or to even handle the default.
 2. **`default`:** Useful when your command does not have any subcommands, the default command is called when no subcommands are issued.
+
+A very simple example:
+
+    from context_commands import Command
+
+    class Current(Command):
+        """Display the current context"""
+        def default(self, context, args, contexts):
+            self.error_message(contexts.current_context)
 
 ## Commands
 
