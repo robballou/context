@@ -5,7 +5,9 @@ import os
 import sys
 import importlib
 
-class Contexts(object):
+from context_commands import Observable
+
+class Contexts(Observable):
     """
     Global contexts class
     """
@@ -14,6 +16,8 @@ class Contexts(object):
     # METHODS
     #
     def __init__(self, data=None, **kwargs):
+        super(Contexts, self).__init__()
+
         # the contexts configuration data
         self.contexts = {}
 
@@ -28,6 +32,10 @@ class Contexts(object):
 
         # holds the commands configured in the user's .contexts file
         self.configured_commands = None
+
+        # plugins
+        self.plugins = []
+        self.loaded_plugins = {}
 
         # settings management
         defaults = {
@@ -125,6 +133,19 @@ class Contexts(object):
                 pass
             sys.stderr.write("\t%s\n" % this_command)
 
+    def initialize_plugins(self):
+        for plugin in self.plugins:
+            try:
+                plugin_name = plugin.split(".")[-1]
+                plugin_name = plugin_name.replace("_", " ")
+                plugin_class_name = plugin_name.title().replace(" ", "")
+
+                module = importlib.import_module(plugin)
+                this_plugin = getattr(module, plugin_class_name)
+                self.loaded_plugins[plugin] = this_plugin(self)
+            except Exception, e:
+                sys.stderr.write("Could not import plugin: %s\n\t%s\n" % (plugin, e))
+
     def parse(self, data):
         """
         Parse/load the contexts data
@@ -138,6 +159,9 @@ class Contexts(object):
         for context in self.contexts:
             if context == '__commands':
                 self.configured_commands = self.contexts[context]
+            elif context == '__plugins':
+                self.plugins = self.contexts[context]
+                self.initialize_plugins()
 
     def run_command(self, command, args):
         """
@@ -156,6 +180,7 @@ class Contexts(object):
         # run the command
         command_object = this_command()
         command_object.run(self.get(self.current_context), args, self)
+        self.trigger(command, args, self)
 
     def switch(self, context):
         """
@@ -169,6 +194,8 @@ class Contexts(object):
         data = json.dumps({'current_context': self.current_context})
         fp.write(data)
         fp.close()
+
+        self.trigger('switch', context)
 
 def context(args):
     """
@@ -205,7 +232,8 @@ def load_contexts(data_file="~/.contexts", options={}):
     if os.path.exists(data_file):
         data = open(data_file, 'r').read()
 
-    return Contexts(data, options=options)
+    context = Contexts(data, options=options)
+    return context
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Context switcher')

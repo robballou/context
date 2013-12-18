@@ -1,6 +1,20 @@
 import os
 import sys
 
+class Observable(object):
+    def __init__(self):
+        self.callbacks = {}
+
+    def subscribe(self, event, callback):
+        if event not in self.callbacks:
+            self.callbacks[event] = []
+        self.callbacks[event].append(callback)
+
+    def trigger(self, event, *args):
+        if event in self.callbacks:
+            for callback in self.callbacks[event]:
+                callback(args)
+
 class Command(object):
     def default(self, context, args, contexts):
         pass
