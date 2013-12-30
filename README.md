@@ -149,11 +149,12 @@ A better example, if you have this in your context configuration:
 
 ```json
 "links": {
-    "dev": "http://dev.example.com"
+    "dev": "http://dev.example.com",
+    "theme": "file:///Users/example/git/project/themefolder"
 }
 ```
 
-You can run: `context links dev` to open that in a browser.
+You can run: `context links dev` to open that link. This command uses `open` to handle opening the links. So if `open` knows how to handle a link, it will do that for you. For example, web links will open in a browser, folders in Finder, etc.
 
 ### Switch
 
