@@ -137,6 +137,7 @@ pushd [git directory]; git merge dev; popd
 #### Subcommands
 
 * `edit` (launch the git folder in your `$EDITOR`)
+* `finder` (launch the git folder in Finder)
 
 ### Links
 
@@ -179,7 +180,9 @@ Goes to the defined `web` folder.
 #### Subcommands
 
 * `edit` (launch the web folder in your `$EDITOR`)
+* `finder` (launch the web folder in Finder)
 * `theme` (goto the theme folder)
+* `theme finder` (goto the theme folder in Finder)
 
 ### Www
 

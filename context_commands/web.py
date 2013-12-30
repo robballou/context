@@ -14,8 +14,17 @@ class Web(Command):
             return
 
         if args.subcommand:
+            web_directory = os.path.expanduser(context['web'])
+            theme_directory = os.path.expanduser(context['theme'])
             if args.subcommand[0] == 'edit':
-                print "$EDITOR %s" % os.path.expanduser(context['web'])
-            elif args.subcommand[0] == 'theme':
-                print "cd %s" % os.path.expanduser(context['theme'])
+                print "$EDITOR %s" % web_directory
+            elif args.subcommand and args.subcommand[0] == 'finder':
+                print "open %s" % web_directory
+            elif args.subcommand[0] == 'theme' and len(args.subcommand) == 1:
+                print "cd %s" % theme_directory
+            elif args.subcommand[0] == 'theme' and len(args.subcommand) > 1:
+                if args.subcommand[1] == 'finder':
+                    print "open %s" % theme_directory
+                else:
+                    print "cd %s" % theme_directory
 

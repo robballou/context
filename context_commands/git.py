@@ -12,6 +12,8 @@ class Git(Command):
                 print "cd %s" % git_directory
         elif args.subcommand and args.subcommand[0] == 'edit':
             print "$EDITOR %s" % git_directory
+        elif args.subcommand and args.subcommand[0] == 'finder':
+            print "open %s" % git_directory
         else:
             # pass the command up to git, but run it in the correct context
             print self.make_command_context_specific("git %s" % " ".join(args.subcommand), git_directory)
