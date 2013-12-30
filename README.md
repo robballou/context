@@ -18,6 +18,9 @@ context git
 # launch the web folder in your editor
 context web edit
 
+# launch the web folder in Finder
+context web finder
+
 # change to vagrant directory
 context vagrant
 
