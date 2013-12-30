@@ -43,7 +43,7 @@ This library requires Python 2.7. Clone this repo where you store your git files
     cd ~/git
     git clone [path]
 
-Add this alias to your aliases and source the aliases file:
+Add this alias to your aliases and source the aliases file (tip: change the alias to something useful for you, examples: `c`, `ctxt`, etc):
 
     alias context=". [path]/context.sh"
 
