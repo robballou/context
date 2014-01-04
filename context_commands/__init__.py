@@ -32,6 +32,11 @@ class Command(object):
             return self.default(context, args, contexts)
         return False
 
-class CommandPasser(object):
+class CommandPasser(Command):
     """Like the Command object, but will pass commands to a given system command"""
-    pass
+    base_dir = None
+
+    def run(self, context, args, contexts):
+        if self.base_dir:
+            path = os.path.expanduser(context[self.base_dir])
+            print self.make_command_context_specific("python manage.py %s" % " ".join(args.subcommand), path)

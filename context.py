@@ -59,8 +59,11 @@ class Contexts(Observable):
             "context_commands.clear",
             "context_commands.contexts",
             "context_commands.current",
+            "context_commands.django",
+            "context_commands.edit",
             "context_commands.git",
             "context_commands.links",
+            "context_commands.switch",
             "context_commands.vagrant",
             "context_commands.web",
             "context_commands.www",
@@ -97,6 +100,7 @@ class Contexts(Observable):
     def get(self, context=None):
         """Get a specific context"""
         if not context:
+            raise Exception('test')
             sys.stderr.write("Cannot get context\n")
             sys.exit(1)
 
@@ -179,7 +183,14 @@ class Contexts(Observable):
 
         # run the command
         command_object = this_command()
-        command_object.run(self.get(self.current_context), args, self)
+
+        # check if there is a current context before calling get()
+        context = None
+        if self.current_context:
+            context = self.get(self.current_context)
+
+        # actually run the command
+        command_object.run(context, args, self)
         self.trigger(command, args, self)
 
     def switch(self, context):
@@ -212,16 +223,7 @@ def context(args):
     if args.list:
         args.command = 'contexts'
 
-    if args.command == 'switch' and args.subcommand and not contexts.get(args.subcommand[0]):
-        print "Could not find context: %s" % (args.subcommand[0])
-        sys.exit(1)
-
-    if args.command == 'switch':
-        contexts.switch(args.subcommand[0])
-    elif args.command == 'clear':
-        contexts.clear()
-    else:
-        contexts.run_command(args.command, args)
+    contexts.run_command(args.command, args)
 
 def load_contexts(data_file="~/.contexts", options={}):
     """Load the contexts file and create the Contexts object"""
