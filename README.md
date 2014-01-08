@@ -36,6 +36,8 @@ context clear
 
 Basically this is a command line tool that allows you to use the same commands in different folders or on different assets. It doesn't require you to be in a specific location to run commands that may require you be setup in a specific location (like vagrant, compass, etc.). Switching contexts lets you change to a different set of definitions.
 
+For the time being, the code here will be in transition as I use the module and find better ways of doing things!
+
 ## Install
 
 This library requires Python 2.7. Clone this repo where you store your git files:
