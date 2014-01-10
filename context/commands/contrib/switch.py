@@ -1,4 +1,4 @@
-from context_commands import Command
+from context.commands import Command
 
 class Switch(Command):
     """Switch the current context"""

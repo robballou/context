@@ -2,7 +2,7 @@ import subprocess
 import re
 import sys
 from argparse import Namespace
-from context_plugins import Plugin
+from context.plugins import Plugin
 
 class VagrantSwitch(Plugin):
     def __init__(self, context_object):

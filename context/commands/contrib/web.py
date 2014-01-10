@@ -1,5 +1,5 @@
 import os
-from context_commands import Command
+from context.commands import Command
 
 class Web(Command):
     alias = 'w'

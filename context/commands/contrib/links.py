@@ -1,4 +1,4 @@
-from context_commands import Command
+from context.commands import Command
 
 class Links(Command):
     alias = 'l'

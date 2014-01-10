@@ -1,4 +1,4 @@
-from context_commands import CommandPasser
+from context.commands import CommandPasser
 
 class Django(CommandPasser):
     """Django commands"""

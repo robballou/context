@@ -97,7 +97,7 @@ The example above will add the example command to the list of available context 
 A very simple example:
 
 ```python
-from context_commands import Command
+from context.commands import Command
 
 class Current(Command):
     """Display the current context"""

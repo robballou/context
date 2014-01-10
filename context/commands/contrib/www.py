@@ -1,4 +1,4 @@
-from context_commands import Command
+from context.commands import Command
 
 class Www(Command):
     def default(self, context, args, contexts):
