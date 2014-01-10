@@ -5,7 +5,7 @@ import os
 import sys
 import importlib
 
-from context_commands import Observable
+from context_commands import Observable, Event
 
 class Contexts(Observable):
     """
@@ -176,7 +176,8 @@ class Contexts(Observable):
             this_command = self.registered_commands[command]
         # check if this is an alias of a registered command
         elif command in self.command_aliases:
-            this_command = self.registered_commands[self.command_aliases[command]]
+            command = self.command_aliases[command]
+            this_command = self.registered_commands[command]
         else:
             sys.stderr.write("Invalid command: %s\n" % command)
             sys.exit(1)
@@ -190,14 +191,25 @@ class Contexts(Observable):
             context = self.get(self.current_context)
 
         # actually run the command
+        pre_event = Event(self, current_context=context, command_args=args)
+        self.trigger("%s.pre" % command, pre_event)
         command_object.run(context, args, self)
-        self.trigger(command, args, self)
+
+        if self.current_context:
+            context = self.get(self.current_context)
+        post_event = Event(self, current_context=context, command_args=args)
+        self.trigger(command, post_event)
 
     def switch(self, context):
         """
         Switch contexts to the provided context key
         """
-        if not self.get(context):
+        # current_context = None
+        # if self.current_context:
+        #     current_context = self.get(self.current_context)
+
+        new_context = self.get(context)
+        if not new_context:
             raise Exception('Invalid context: %s' % context)
 
         self.current_context = context
@@ -205,8 +217,6 @@ class Contexts(Observable):
         data = json.dumps({'current_context': self.current_context})
         fp.write(data)
         fp.close()
-
-        self.trigger('switch', context)
 
 def context(args):
     """

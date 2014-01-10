@@ -1,6 +1,13 @@
 import os
 import sys
 
+class Event(object):
+    def __init__(self, context, **kwargs):
+        self.context = context
+        self.attributes = {}
+        for kwarg in kwargs:
+            self.attributes[kwarg] = kwargs[kwarg]
+
 class Observable(object):
     def __init__(self):
         self.callbacks = {}
@@ -10,12 +17,14 @@ class Observable(object):
             self.callbacks[event] = []
         self.callbacks[event].append(callback)
 
-    def trigger(self, event, *args):
-        if event in self.callbacks:
-            for callback in self.callbacks[event]:
-                callback(args)
+    def trigger(self, trigger, *args):
+        if trigger in self.callbacks:
+            for callback in self.callbacks[trigger]:
+                callback(*args)
 
 class Command(object):
+    """Base Command class"""
+
     def default(self, context, args, contexts):
         pass
 

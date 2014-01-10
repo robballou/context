@@ -12,5 +12,5 @@ class Notify(Plugin):
         m = '-message {!r}'.format(message)
         subprocess.call('terminal-notifier {}'.format(' '.join([m, t])), shell=True)
 
-    def switch(self, context):
+    def switch(self, context, settings):
         self.notify('Context Switcher', 'Switched to context: %s' % context)
