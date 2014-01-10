@@ -7,5 +7,5 @@ Plugins allow developers to create functionality that reacts to a context events
 You can add a `__plugins` item to your `~/.contexts` file:
 
     "__plugins": [
-		"context_plugins.vagrant_switch"
+		"context.plugins.contrib.vagrant_switch"
 	],
