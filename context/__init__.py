@@ -147,6 +147,7 @@ class Contexts(Observable):
                 self.loaded_plugins[plugin] = this_plugin(self)
             except Exception, e:
                 sys.stderr.write("Could not import plugin: %s\n\t%s\n" % (plugin, e))
+                raise e
 
     def parse(self, data):
         """

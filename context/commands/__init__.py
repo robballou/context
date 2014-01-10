@@ -2,6 +2,9 @@ import os
 import sys
 
 class Event(object):
+    """
+    Event object used when triggering events
+    """
     def __init__(self, context, **kwargs):
         self.context = context
         self.attributes = {}
@@ -9,6 +12,11 @@ class Event(object):
             self.attributes[kwarg] = kwargs[kwarg]
 
 class Observable(object):
+    """
+    Base observerable class
+
+    Allow classes to subscribe and trigger events.
+    """
     def __init__(self):
         self.callbacks = {}
 

@@ -1,7 +1,10 @@
 import sys
-from context_commands import Observable
+from context.commands import Observable
 
 class Plugin(Observable):
+    """
+    Basic plugin class
+    """
     def __init__(self, context_object):
         self.context_object = context_object
 

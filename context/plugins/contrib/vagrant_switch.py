@@ -5,11 +5,23 @@ from argparse import Namespace
 from context.plugins import Plugin
 
 class VagrantSwitch(Plugin):
+    """
+    Plugin to catch if a VM is running before switching contexts.
+
+    CONFIGURATION
+
+    The contexts need to have a "vm" key in the configuration file. This should be the
+    name for vm as returned by VBoxManage. Also add "context.plugins.contrib.vagrant_switch" to
+    your "__plugins" list in your config file.
+
+    Observers: switch.pre
+    """
     def __init__(self, context_object):
         super(VagrantSwitch, self).__init__(context_object)
         context_object.subscribe('switch.pre', self.switch)
 
     def get_running_vms(self):
+        """Get a list of running VMs"""
         output = subprocess.check_output("VBoxManage list runningvms", shell=True)
         reg = re.compile(r'"(?P<vm>[^"]+)"')
         vms = []
@@ -19,15 +31,12 @@ class VagrantSwitch(Plugin):
                 vms.append(match.group('vm'))
         return vms
 
-    # def pre_switch(self, event):
-    #     self.pre_context_name = event.context.current_context
-    #     self.pre_context_settings = None
-    #     if self.pre_context_name:
-    #         self.pre_context_settings = event.context.get(event.context.current_context)
-
     def switch(self, event):
+        """
+        Catch when a user is switching contexts and see if the VM for that context is running
+        """
+
         # check vbox manage
-        # VBoxManage list runningvms
         running_vms = self.get_running_vms()
 
         # if the context is being switched to the current context, skip
