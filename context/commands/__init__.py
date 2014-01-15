@@ -56,4 +56,4 @@ class CommandPasser(Command):
     def run(self, context, args, contexts):
         if self.base_dir:
             path = os.path.expanduser(context[self.base_dir])
-            print self.make_command_context_specific("python manage.py %s" % " ".join(args.subcommand), path)
+            print self.make_command_context_specific("%s %s" % (self.command, " ".join(args.subcommand)), path)

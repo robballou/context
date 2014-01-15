@@ -60,7 +60,9 @@ class Contexts(Observable):
             "context.commands.contrib.django",
             "context.commands.contrib.edit",
             "context.commands.contrib.git",
+            "context.commands.contrib.gulp",
             "context.commands.contrib.links",
+            "context.commands.contrib.npm",
             "context.commands.contrib.switch",
             "context.commands.contrib.vagrant",
             "context.commands.contrib.web",
@@ -203,9 +205,6 @@ class Contexts(Observable):
         """
         Switch contexts to the provided context key
         """
-        # current_context = None
-        # if self.current_context:
-        #     current_context = self.get(self.current_context)
 
         new_context = self.get(context)
         if not new_context:
