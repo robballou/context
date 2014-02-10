@@ -2,6 +2,7 @@ import json
 import os
 import sys
 import importlib
+import re
 
 from commands import Observable, Event
 
@@ -35,6 +36,8 @@ class Contexts(Observable):
         self.plugins = []
         self.loaded_plugins = {}
 
+        self.variable_pattern = re.compile(r'\$([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)')
+
         # settings management
         defaults = {
             "context_file": "~/.contexts",
@@ -51,7 +54,7 @@ class Contexts(Observable):
         if data:
             self.parse(data)
 
-        # load commands
+        # default commands to load
         commands = [
             "context.commands.contrib.bundler",
             "context.commands.contrib.clear",
@@ -151,12 +154,15 @@ class Contexts(Observable):
                 sys.stderr.write("Could not import plugin: %s\n\t%s\n" % (plugin, e))
                 raise e
 
+    def message(self, message):
+        sys.stderr.write("%s\n" % message)
+
     def parse(self, data):
         """
         Parse/load the contexts data
         """
         try:
-            self.contexts = json.loads(data)
+            self.contexts = self.parse_contexts(json.loads(data))
         except Exception, e:
             sys.stderr.write("Error: Could not load contexts: %s\n" % e)
             sys.exit(1)
@@ -167,6 +173,40 @@ class Contexts(Observable):
             elif context == '__plugins':
                 self.plugins = self.contexts[context]
                 self.initialize_plugins()
+
+    def parse_contexts(self, contexts):
+        """Parse the loaded contexts for variables"""
+
+        # loop through the contexts
+        for context in contexts:
+            # skip controls (items that start with __)
+            if context.startswith('__'):
+                continue
+
+            # loop through the items within the context
+            for setting in contexts[context]:
+                this_setting = contexts[context][setting]
+                if isinstance(this_setting, basestring):
+                    this_setting = self.parse_variables(this_setting, contexts[context])
+                else:
+                    for subsetting in this_setting:
+                        this_subsetting = this_setting[subsetting]
+                        if isinstance(this_subsetting, basestring):
+                            this_subsetting = self.parse_variables(this_subsetting, contexts[context])
+                        this_setting[subsetting] = this_subsetting
+                contexts[context][setting] = this_setting
+        return contexts
+
+    def parse_variables(self, setting_string, context):
+        """Parse the string for variables and replace with values from the context"""
+
+        match = self.variable_pattern.search(setting_string)
+        if match:
+            # we need to parse variables
+            for variable in match.groups():
+                if variable in context:
+                    setting_string = setting_string.replace("$%s" % variable, context[variable])
+        return setting_string
 
     def run_command(self, command, args):
         """
