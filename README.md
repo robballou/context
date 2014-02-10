@@ -107,6 +107,21 @@ class Current(Command):
 
 To execute commands on the shell, print them out to the `stdout`. If you want to print informational data, print that out to `stderr` (`self.error_message` above is just a method that writes to `stderr` for you).
 
+## Context variables
+
+You can use variables within context definitions. The variables take a PHP-style approach:
+
+```json
+{
+    "my_project": {
+        "git": "~/git/my_project",
+        "vagrant": "$git/vagrant"
+    }
+}
+```
+
+The `my_project.vagrant` setting will become: `~/git/my_project/vagrant`
+
 ## Commands
 
 ### Bundler
