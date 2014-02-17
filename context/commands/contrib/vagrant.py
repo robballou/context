@@ -17,3 +17,5 @@ class Vagrant(Command):
             print self.make_command_context_specific("vagrant ssh", vagrant_directory)
         elif args.subcommand[0] == 'status':
             print self.make_command_context_specific("vagrant status", vagrant_directory)
+        elif args.subcommand[0] == 'provision':
+            print self.make_command_context_specific("vagrant provision", vagrant_directory)
