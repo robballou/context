@@ -11,5 +11,7 @@ class Vagrant(CommandPasser):
         vagrant_directory = os.path.expanduser(context['vagrant'])
         if not args.subcommand:
             print "cd %s" % vagrant_directory
+        elif args.subcommand[0] == 'down':
+            print self.make_command_context_specific('vagrant halt', vagrant_directory)
         else:
             super(Vagrant, self).run(context, args, contexts)
