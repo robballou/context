@@ -1,21 +1,15 @@
 import os
-from context.commands import Command
+from context.commands import CommandPasser
 
-class Vagrant(Command):
+class Vagrant(CommandPasser):
     """Vagrant commands"""
     alias = 'v'
+    base_dir = 'vagrant'
+    command = 'vagrant'
+
     def run(self, context, args, contexts):
         vagrant_directory = os.path.expanduser(context['vagrant'])
-        # by default, go to the vagrant directory
         if not args.subcommand:
             print "cd %s" % vagrant_directory
-        elif args.subcommand[0] == 'down' or args.subcommand[0] == 'halt':
-            print self.make_command_context_specific("vagrant halt", vagrant_directory)
-        elif args.subcommand[0] == 'up':
-            print self.make_command_context_specific("vagrant up", vagrant_directory)
-        elif args.subcommand[0] == 'ssh':
-            print self.make_command_context_specific("vagrant ssh", vagrant_directory)
-        elif args.subcommand[0] == 'status':
-            print self.make_command_context_specific("vagrant status", vagrant_directory)
-        elif args.subcommand[0] == 'provision':
-            print self.make_command_context_specific("vagrant provision", vagrant_directory)
+        else:
+            super(Vagrant, self).run(context, args, contexts)
