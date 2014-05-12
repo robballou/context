@@ -64,6 +64,11 @@ Configure some contexts:
 }
 ```
 
+For ZSH, you will also need to add the following to your `~/.zshrc`:
+
+    # set to the install path for the context tool
+    CONTEXT_HOME=[path]
+
 ## Context Configuration options
 
 * git: string
