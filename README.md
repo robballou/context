@@ -151,6 +151,10 @@ Outputs the current context. If there isn't a context selected, it will output: 
 
 Passes commands to the Django manage.py in the `web` folder of your context.
 
+### Drush
+
+Passes commands to Drush in the `web` folder of your context.
+
 ### Edit
 
 Opens the contexts file in the `$EDITOR`.
