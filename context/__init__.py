@@ -61,6 +61,7 @@ class Contexts(Observable):
             "context.commands.contrib.contexts",
             "context.commands.contrib.current",
             "context.commands.contrib.django",
+            "context.commands.contrib.drush",
             "context.commands.contrib.edit",
             "context.commands.contrib.git",
             "context.commands.contrib.gulp",
