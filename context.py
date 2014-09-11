@@ -17,9 +17,6 @@ def context(args):
         contexts.help()
         sys.exit(0)
 
-    if args.list:
-        args.command = 'contexts'
-
     contexts.run_command(args.command, args)
 
 def load_contexts(data_file="~/.contexts", options={}):
@@ -42,6 +39,5 @@ if __name__ == '__main__':
     parser.add_argument('--contexts', '-c', help="The contexts data file", action="store", dest="contexts_file", default="~/.contexts")
     parser.add_argument('--data', '-d', help="The contexts library data file", action="store", dest="data_file", default="~/.contexts_data")
     parser.add_argument('--verbose', '-v', help="Show more information about process", dest="verbose", action="store_true", default=False)
-    parser.add_argument('--list', '-l', help="List contexts", dest="list", action="store_true", default=False)
     args = parser.parse_args()
     context(args)
