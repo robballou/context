@@ -45,7 +45,7 @@ class VagrantSwitch(Plugin):
 
         # try to see if the VM is running and turn it off
         try:
-            if event.attributes['current_context']['vm'] in running_vms:
+            if event.attributes['current_context'] and event.attributes['current_context']['vm'] in running_vms:
                 sys.stderr.write("The VM for the context %s is running. Do you want to halt it? [Y/n] " % event.context.current_context)
                 answer = sys.stdin.readline()
                 answer = answer.strip()
