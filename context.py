@@ -17,7 +17,10 @@ def context(args):
         contexts.help()
         sys.exit(0)
 
-    contexts.run_command(args.command, args)
+    try:
+        contexts.run_command(args.command, args)
+    except Exception, e:
+        sys.stderr.write("%s\n" % e.message)
 
 def load_contexts(data_file="~/.contexts", options={}):
     """Load the contexts file and create the Contexts object"""
