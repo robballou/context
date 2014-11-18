@@ -141,7 +141,9 @@ Clears the current context. Currently this actually just removes `~/.contexts_da
 
 ### Contexts
 
-List out the available contexts
+List out the available contexts. You can get the details of a specific context with:
+
+    context contexts example
 
 ### Current
 
