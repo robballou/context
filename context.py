@@ -2,8 +2,11 @@
 import argparse
 import os
 import sys
+import pprint
+import traceback
 
 from context import Contexts
+
 
 def context(args):
     """
@@ -21,6 +24,10 @@ def context(args):
         contexts.run_command(args.command, args)
     except Exception, e:
         sys.stderr.write("%s\n" % e.message)
+        pp = pprint.PrettyPrinter(stream=sys.stderr)
+        pp.pprint(e)
+        traceback.print_exc(file=sys.stderr)
+
 
 def load_contexts(data_file="~/.contexts", options={}):
     """Load the contexts file and create the Contexts object"""

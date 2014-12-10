@@ -47,7 +47,7 @@ class Command(object):
 
         # set self.settings to the command settings, if available
         try:
-            self.settings = context[command]
+            self.settings = context['settings'][command]
         except Exception, e:
             pass
 
@@ -75,7 +75,7 @@ class Command(object):
 
     def make_command_context_specific(self, command, directory):
         if os.getcwd() != directory:
-            command = "pushd %s; %s%s; popd" % (directory, command)
+            command = "pushd %s; %s; popd" % (directory, command)
         return command
 
     def run(self, context, args, contexts):
@@ -95,11 +95,12 @@ class CommandPasser(Command):
         if self.base_dir:
             path = os.path.expanduser(context[self.base_dir])
             options = self.get_options()
+            command = "%s%s %s" % (
+                self.command,
+                options,
+                " ".join(args.subcommand)
+            )
             print self.make_command_context_specific(
-                "%s%s %s" % (
-                    self.command,
-                    options,
-                    " ".join(args.subcommand)
-                ),
+                command,
                 path
             )

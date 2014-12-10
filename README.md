@@ -129,6 +129,28 @@ The `my_project.vagrant` setting will become: `~/git/my_project/vagrant`
 
 ## Commands
 
+The following is a list of contributed commands.
+
+Commands can have context-specific settings:
+
+```json
+{
+  "my_project": {
+    "git": "~/git/my_project",
+    "vagrant": "$git/vagrant",
+    "settings": {
+      "drush": {
+        "options": {
+          "strict": 0
+        }
+      }
+    }
+  }
+}
+```
+
+When a command is run, it will look in for settings in the current context. `options` is a special type of settings: these get converted to flags when running the command. So in the example above, the `drush` command will get a flag `--strict=0` added to the command.
+
 ### Bundler
 
 The bundler command allows you to execute a command with Bundler within the `theme` directory for your context. Example:
@@ -151,11 +173,42 @@ Outputs the current context. If there isn't a context selected, it will output: 
 
 ### Django
 
+**Alias:** d
+
 Passes commands to the Django manage.py in the `web` folder of your context.
 
 ### Drush
 
+**Alias:** dr
+
 Passes commands to Drush in the `web` folder of your context.
+
+The Drush command also has special handling for [Drush aliases](http://docs.drush.org/en/master/usage/). You can specify context-specific Drush aliases, including a default alias:
+
+```json
+{
+  "my_project": {
+    "git": "~/git/my_project",
+    "vagrant": "$git/vagrant",
+    "settings": {
+      "drush": {
+        "aliases": {
+          "default": "example.dev",
+          "prod": "example.prod"
+        }
+      }
+    }
+  }
+}
+```
+
+The default alias will always be used unless another alias is specified, so only use it on projects where you will *always* use an alias.
+
+    # this will run: drush @example.dev pml
+    ct drush pml
+
+    # this will run drush @example.prod pml
+    ct drush:prod pml
 
 ### Edit
 

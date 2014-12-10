@@ -5,6 +5,7 @@ class Drush(CommandPasser):
     """Drush commands"""
     base_dir = 'web'
     command = 'drush'
+    alias = 'dr'
 
     def get_options(self):
         """Override CommandPasser.get_options to allow for Drush aliases"""
@@ -18,5 +19,4 @@ class Drush(CommandPasser):
             options = " @%s%s" % (alias, options)
         except Exception, e:
             pass
-        self.contexts.message(options)
         return options
