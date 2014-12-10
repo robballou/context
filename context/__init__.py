@@ -209,7 +209,7 @@ class Contexts(Observable):
                     setting_string = setting_string.replace("$%s" % variable, context[variable])
         return setting_string
 
-    def run_command(self, command, args):
+    def run_command(self, command, args, remaining_args=None):
         """
         Run the specified command
         """
@@ -238,7 +238,13 @@ class Contexts(Observable):
             context = self.get(self.current_context)
 
         # run the command
-        command_object = this_command(command, context, self, command_args)
+        command_object = this_command(
+            command,
+            context,
+            self,
+            command_args,
+            remaining_args
+        )
 
         # actually run the command
         pre_event = Event(self, current_context=context, command_args=args)

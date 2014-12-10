@@ -36,13 +36,14 @@ class Observable(object):
 class Command(object):
     """Base Command class"""
 
-    def __init__(self, command, context, contexts, command_args=None):
+    def __init__(self, command, context, contexts, command_args=None, remaining_args=None):
         super(Command, self).__init__()
 
         self.command = command
         self.context = context
         self.contexts = contexts
         self.command_args = command_args
+        self.remaining_args = remaining_args
         self.settings = {}
 
         # set self.settings to the command settings, if available
@@ -60,6 +61,12 @@ class Command(object):
     def get_options(self):
         """Add options to this command"""
         options = ""
+
+        try:
+            for option in self.remaining_args:
+                options = "%s %s" % (options, option)
+        except Exception, e:
+            pass
 
         try:
             for option in self.settings['options']:

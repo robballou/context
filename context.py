@@ -8,7 +8,7 @@ import traceback
 from context import Contexts
 
 
-def context(args):
+def context(args, remaining_args):
     """
     Context functionality from __main__
 
@@ -21,7 +21,7 @@ def context(args):
         sys.exit(0)
 
     try:
-        contexts.run_command(args.command, args)
+        contexts.run_command(args.command, args, remaining_args)
     except Exception, e:
         sys.stderr.write("%s\n" % e.message)
         pp = pprint.PrettyPrinter(stream=sys.stderr)
@@ -49,5 +49,5 @@ if __name__ == '__main__':
     parser.add_argument('--contexts', '-c', help="The contexts data file", action="store", dest="contexts_file", default="~/.contexts")
     parser.add_argument('--data', '-d', help="The contexts library data file", action="store", dest="data_file", default="~/.contexts_data")
     parser.add_argument('--verbose', '-v', help="Show more information about process", dest="verbose", action="store_true", default=False)
-    args = parser.parse_args()
-    context(args)
+    args, remaining = parser.parse_known_args()
+    context(args, remaining)
