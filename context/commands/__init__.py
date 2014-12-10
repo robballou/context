@@ -1,6 +1,7 @@
 import os
 import sys
 
+
 class Event(object):
     """
     Event object used when triggering events
@@ -10,6 +11,7 @@ class Event(object):
         self.attributes = {}
         for kwarg in kwargs:
             self.attributes[kwarg] = kwargs[kwarg]
+
 
 class Observable(object):
     """
@@ -30,8 +32,24 @@ class Observable(object):
             for callback in self.callbacks[trigger]:
                 callback(*args)
 
+
 class Command(object):
     """Base Command class"""
+
+    def __init__(self, command, context, contexts, command_args=None):
+        super(Command, self).__init__()
+
+        self.command = command
+        self.context = context
+        self.contexts = contexts
+        self.command_args = command_args
+        self.settings = {}
+
+        # set self.settings to the command settings, if available
+        try:
+            self.settings = context[command]
+        except Exception, e:
+            pass
 
     def default(self, context, args, contexts):
         pass
@@ -39,9 +57,25 @@ class Command(object):
     def error_message(self, message):
         sys.stderr.write("%s\n" % message)
 
+    def get_options(self):
+        """Add options to this command"""
+        options = ""
+
+        try:
+            for option in self.settings['options']:
+                options = "%s --%s=%s" % (
+                    options,
+                    option,
+                    self.settings['options'][option]
+                )
+        except Exception, e:
+            pass
+
+        return options
+
     def make_command_context_specific(self, command, directory):
         if os.getcwd() != directory:
-            command = "pushd %s; %s; popd" % (directory, command)
+            command = "pushd %s; %s%s; popd" % (directory, command)
         return command
 
     def run(self, context, args, contexts):
@@ -49,11 +83,23 @@ class Command(object):
             return self.default(context, args, contexts)
         return False
 
+
 class CommandPasser(Command):
-    """Like the Command object, but will pass commands to a given system command"""
+    """
+    Like the Command object, but will pass commands to a given
+    system command
+    """
     base_dir = None
 
     def run(self, context, args, contexts):
         if self.base_dir:
             path = os.path.expanduser(context[self.base_dir])
-            print self.make_command_context_specific("%s %s" % (self.command, " ".join(args.subcommand)), path)
+            options = self.get_options()
+            print self.make_command_context_specific(
+                "%s%s %s" % (
+                    self.command,
+                    options,
+                    " ".join(args.subcommand)
+                ),
+                path
+            )

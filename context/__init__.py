@@ -213,6 +213,14 @@ class Contexts(Observable):
         """
         Run the specified command
         """
+
+        command_args = None
+        try:
+            command, command_args = command.split(':')
+            command_args.trim()
+        except Exception, e:
+            pass
+
         # check if the command is registered
         if command in self.registered_commands:
             this_command = self.registered_commands[command]
@@ -224,13 +232,13 @@ class Contexts(Observable):
             sys.stderr.write("Invalid command: %s\n" % command)
             sys.exit(1)
 
-        # run the command
-        command_object = this_command()
-
         # check if there is a current context before calling get()
         context = None
         if self.current_context:
             context = self.get(self.current_context)
+
+        # run the command
+        command_object = this_command(command, context, self, command_args)
 
         # actually run the command
         pre_event = Event(self, current_context=context, command_args=args)
