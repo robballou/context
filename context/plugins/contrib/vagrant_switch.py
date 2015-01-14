@@ -19,6 +19,12 @@ class VagrantSwitch(Plugin):
     def __init__(self, context_object):
         super(VagrantSwitch, self).__init__(context_object)
         context_object.subscribe('switch.pre', self.switch)
+        context_object.subscribe('switch', self.post_switch)
+        self.context = context_object
+
+    def answer_is_affirmative(self, answer):
+        """Check if the user input is affirmative"""
+        return answer.strip() in ['y', 'yes', 'Y', '1', '']
 
     def get_running_vms(self):
         """Get a list of running VMs"""
@@ -33,7 +39,8 @@ class VagrantSwitch(Plugin):
 
     def switch(self, event):
         """
-        Catch when a user is switching contexts and see if the VM for that context is running
+        Catch when a user is switching contexts and see if the VM for that
+        context is running
         """
 
         # check vbox manage
@@ -48,10 +55,28 @@ class VagrantSwitch(Plugin):
             if event.attributes['current_context'] and event.attributes['current_context']['vm'] in running_vms:
                 sys.stderr.write("The VM for the context %s is running. Do you want to halt it? [Y/n] " % event.context.current_context)
                 answer = sys.stdin.readline()
-                answer = answer.strip()
-                # answer = raw_input("The VM for the context %s is running. Do you want to halt it? [Y/n]" % event.context.current_context)
-                if answer in ['y', 'yes', 'Y', '1', '']:
+                if self.answer_is_affirmative(answer):
                     self.message("Halting VM")
                     event.context.run_command('vagrant', Namespace(subcommand=["down"]))
+        except KeyError:
+            pass
+
+    def post_switch(self, event):
+        """
+        Catch when a user has switched contexts and see if the VM for the new
+        context is running
+        """
+
+        # check vbox manage
+        running_vms = self.get_running_vms()
+
+        # try to see if the new VM is running and turn it on
+        try:
+            if event.attributes['current_context'] and event.attributes['current_context']['vm'] not in running_vms:
+                sys.stderr.write("The VM for the context %s is not running. Do you want to start it? [Y/n] " % event.context.current_context)
+                answer = sys.stdin.readline()
+                if self.answer_is_affirmative(answer):
+                    self.message("Starting VM")
+                    event.context.run_command('vagrant', Namespace(subcommand=["up"]))
         except KeyError:
             pass
