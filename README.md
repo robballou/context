@@ -127,6 +127,46 @@ You can use variables within context definitions. The variables take a PHP-style
 
 The `my_project.vagrant` setting will become: `~/git/my_project/vagrant`
 
+## Plugins
+
+The plugin interface allows you to create functionality around commands. Context ships with one plugin by
+default called `vagrant_switch`. This let's you turn off/turn on vagrant VMs while you switch contexts. If
+you have multiple contexts which have their own vagrant instances, this will make it easier to turn them off
+and on while you switch.
+
+To enable plugins, edit your configuration to include:
+
+```json
+{
+  "__plugins": [
+    "context.plugins.contrib.vagrant_switch"
+  ]
+}
+```
+
+Vagrant switch will prompt if you want to halt/start VMs as you switch.
+
+### Custom plugins
+
+You can create your own plugins:
+
+```python
+from context.plugins import Plugin
+
+class MyPlugin(Plugin):
+    def __init__(self, context_object):
+        super(VagrantSwitch, self).__init__(context_object)
+        context_object.subscribe('switch.pre', self.pre_switch)
+        context_object.subscribe('switch', self.post_switch)
+        self.context = context_object
+
+    def pre_switch(self, event):
+        self.message('pre switch')
+
+    def post_switch(self, event):
+        self.message('post switch')
+```
+
 ## Commands
 
 The following is a list of contributed commands.
