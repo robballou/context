@@ -299,6 +299,7 @@ When run with `ct git branch stage`, this will run:
 * `git checkout stage` (default command run by the branch subcommand)
 * `drush @example.alias sql-drop --yes`
 * `pv $web/database.sql | drush @example.alias sqlc` (where `$web` is the configured web folder for the project)
+* `popd` (leaves the $git folder)
 
 All commands are chained together with `&&` so each much pass for the whole switch to work.
 
