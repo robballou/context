@@ -268,8 +268,39 @@ pushd [git directory]; git merge dev; popd
 
 #### Subcommands
 
+* `branch` (switch branches, perform commands specified in settings)
 * `edit` (launch the git folder in your `$EDITOR`)
 * `finder` (launch the git folder in Finder)
+
+The new `branch` command allows you to specify commands to run as you switch branches in git. You can set branch-specific commands and default commands that always run (the default commands run before the branch specific commands). All commands are centered on the git folder for the project. As an example, here's a configuration for a Drupal project to backup the database and load a new database while switching branches:
+
+```json
+"settings": {
+  "git": {
+    "branch": {
+      "__defaults": {
+        "precommands": [
+          "drush @example.alias sql-dump --result-file=$branch.$date.sql",
+        ],
+        "postcommands": [
+          "drush @example.alias sql-drop --yes",
+          "pv $web/database.sql | drush @example.alias sqlc"
+        ]
+      }
+    }
+  }
+}
+```
+
+When run with `ct git branch stage`, this will run:
+
+* `pushd $git` (where `$git` is the configured git folder)
+* `drush @example.alias sql-dump --result-file=$(git rev-parse --abbrev-ref HEAD).$(date +"%Y%m%d%H%M%S").sql` (notice that `$branch` is replaced with the current branch and `$date` with the current date)
+* `git checkout stage` (default command run by the branch subcommand)
+* `drush @example.alias sql-drop --yes`
+* `pv $web/database.sql | drush @example.alias sqlc` (where `$web` is the configured web folder for the project)
+
+All commands are chained together with `&&` so each much pass for the whole switch to work.
 
 ### Links
 
