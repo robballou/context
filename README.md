@@ -303,6 +303,26 @@ When run with `ct git branch stage`, this will run:
 
 All commands are chained together with `&&` so each much pass for the whole switch to work.
 
+Branch specific commands can be added with:
+
+```json
+"settings": {
+  "git": {
+    "branch": {
+      "__defaults": {
+        ...
+      },
+      "master": {
+        ...
+      },
+      "stage": {
+        ...
+      }
+    }
+  }
+}
+```
+
 ### Links
 
 **Alias:** l
