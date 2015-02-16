@@ -14,8 +14,8 @@ class Drush(CommandPasser):
         # try to add the alias
         try:
             alias = self.settings['aliases']['default']
-            if self.command_args and self.command_args[0] in self.settings['aliases']:
-                alias = self.settings['aliases'][self.command_args[0]]
+            if self.command_args and self.command_args in self.settings['aliases']:
+                alias = self.settings['aliases'][self.command_args]
             options = " @%s%s" % (alias, options)
         except Exception, e:
             pass
