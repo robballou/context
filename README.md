@@ -250,6 +250,8 @@ The default alias will always be used unless another alias is specified, so only
     # this will run drush @example.prod pml
     ct drush:prod pml
 
+You can also specify a directory in `settings.drush.directory` where the drush command will execute (normally it executes in the `web` folder).
+
 ### Edit
 
 Opens the contexts file in the `$EDITOR`.
