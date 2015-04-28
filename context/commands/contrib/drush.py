@@ -1,3 +1,4 @@
+import os.path
 from context.commands import CommandPasser
 
 
@@ -10,6 +11,12 @@ class Drush(CommandPasser):
     def get_options(self):
         """Override CommandPasser.get_options to allow for Drush aliases"""
         options = super(Drush, self).get_options()
+
+        # try to see if there is an alternate directory location
+        try:
+            self.base_dir = self.settings['directory']
+        except Exception, e:
+            pass
 
         # try to add the alias
         try:

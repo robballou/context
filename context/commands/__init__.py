@@ -99,9 +99,18 @@ class CommandPasser(Command):
     base_dir = None
 
     def run(self, context, args, contexts):
+        options = self.get_options()
         if self.base_dir:
-            path = os.path.expanduser(context[self.base_dir])
-            options = self.get_options()
+            self.error_message("base dir: %s" % self.base_dir)
+
+            # first try to set the path to something in the context (like web,
+            # git, etc) and if that fails assume this is a filesystem path
+            try:
+                path = os.path.expanduser(context[self.base_dir])
+            except KeyError, e:
+                path = os.path.expanduser(self.base_dir)
+
+            # build the command
             command = "%s%s %s" % (
                 self.command,
                 options,
