@@ -101,8 +101,6 @@ class CommandPasser(Command):
     def run(self, context, args, contexts):
         options = self.get_options()
         if self.base_dir:
-            self.error_message("base dir: %s" % self.base_dir)
-
             # first try to set the path to something in the context (like web,
             # git, etc) and if that fails assume this is a filesystem path
             try:
