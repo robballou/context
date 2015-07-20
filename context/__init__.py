@@ -96,10 +96,22 @@ class Contexts(Observable):
 
         # load the switchers' data file
         contexts_data_file = self.get_contexts_data_file()
-        if os.path.exists(contexts_data_file):
+        if os.path.exists(contexts_data_file) and os.path.isfile(contexts_data_file):
             contexts_data = json.loads(open(contexts_data_file, 'r').read())
             if 'current_context' in contexts_data:
                 self.current_context = contexts_data['current_context']
+        # the context data is a directory, not a file
+        elif os.path.exists(contexts_data_file) and os.path.isdir(contexts_data_file):
+            contexts_data = []
+            for context_file in os.listdir(contexts_data_file):
+                this_path = "%s/%s" % (contexts_data_file, context_file)
+                filename, file_extension = os.path.splitext(this_path)
+                if file_extension == '.json':
+                    # add this data
+                    contexts_data.extend(json.loads(
+                        open(this_path, 'r').read())
+                    )
+
 
     def get(self, context=None):
         """Get a specific context"""
