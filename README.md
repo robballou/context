@@ -69,6 +69,8 @@ For ZSH, you will also need to add the following to your `~/.zshrc`:
     # set to the install path for the context tool
     CONTEXT_HOME=[path]
 
+If you have many contexts or you just want organize things differently, you can make `~/.contexts` a directory. Contexts will load any `*.json` file within the directory.
+
 ## Context Configuration options
 
 * git: string
