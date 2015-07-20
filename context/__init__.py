@@ -6,6 +6,7 @@ import re
 
 from commands import Observable, Event
 
+
 class Contexts(Observable):
     """
     Global contexts class
@@ -100,17 +101,6 @@ class Contexts(Observable):
             contexts_data = json.loads(open(contexts_data_file, 'r').read())
             if 'current_context' in contexts_data:
                 self.current_context = contexts_data['current_context']
-        # the context data is a directory, not a file
-        elif os.path.exists(contexts_data_file) and os.path.isdir(contexts_data_file):
-            contexts_data = []
-            for context_file in os.listdir(contexts_data_file):
-                this_path = "%s/%s" % (contexts_data_file, context_file)
-                filename, file_extension = os.path.splitext(this_path)
-                if file_extension == '.json':
-                    # add this data
-                    contexts_data.extend(json.loads(
-                        open(this_path, 'r').read())
-                    )
 
 
     def get(self, context=None):
@@ -176,6 +166,19 @@ class Contexts(Observable):
         """
         try:
             self.contexts = self.parse_contexts(json.loads(data))
+        except TypeError, te:
+            self.contexts = {}
+            for contexts_item in data:
+                contexts_data = self.parse_contexts(json.loads(contexts_item))
+                for data_key, data_item in contexts_data.iteritems():
+                    if data_key not in self.contexts:
+                        self.contexts[data_key] = data_item
+                    else:
+                        try:
+                            self.contexts[data_key].update(data_item)
+                        except Exception, e:
+                            self.contexts[data_key].extend(data_item)
+
         except Exception, e:
             sys.stderr.write("Error: Could not load contexts: %s\n" % e)
             sys.exit(1)
