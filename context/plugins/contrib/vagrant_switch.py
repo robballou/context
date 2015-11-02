@@ -45,6 +45,8 @@ class VagrantSwitch(Plugin):
 
         # check vbox manage
         running_vms = self.get_running_vms()
+        if not running_vms:
+            return
 
         # if the context is being switched to the current context, skip
         if event.attributes['command_args'].subcommand and event.attributes['command_args'].subcommand[0] == event.context.current_context:
