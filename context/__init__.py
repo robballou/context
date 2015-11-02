@@ -6,6 +6,8 @@ import re
 
 from commands import Observable, Event
 
+class InvalidContextException(Exception):
+    pass
 
 class Contexts(Observable):
     """
@@ -229,47 +231,54 @@ class Contexts(Observable):
         Run the specified command
         """
 
-        command_args = None
         try:
-            command, command_args = command.split(':')
-            command_args.trim()
-        except Exception, e:
-            pass
+            command_args = None
+            try:
+                command, command_args = command.split(':')
+                command_args.trim()
+            except Exception, e:
+                pass
 
-        # check if the command is registered
-        if command in self.registered_commands:
-            this_command = self.registered_commands[command]
-        # check if this is an alias of a registered command
-        elif command in self.command_aliases:
-            command = self.command_aliases[command]
-            this_command = self.registered_commands[command]
-        else:
-            sys.stderr.write("Invalid command: %s\n" % command)
+            # check if the command is registered
+            if command in self.registered_commands:
+                this_command = self.registered_commands[command]
+            # check if this is an alias of a registered command
+            elif command in self.command_aliases:
+                command = self.command_aliases[command]
+                this_command = self.registered_commands[command]
+            else:
+                sys.stderr.write("Invalid command: %s\n" % command)
+                sys.exit(1)
+
+            # check if there is a current context before calling get()
+            context = None
+            if self.current_context:
+                context = self.get(self.current_context)
+
+            if not context:
+                raise Exception('Invalid context')
+
+            # run the command
+            command_object = this_command(
+                command,
+                context,
+                self,
+                command_args,
+                remaining_args
+            )
+
+            # actually run the command
+            pre_event = Event(self, current_context=context, command_args=args)
+            self.trigger("%s.pre" % command, pre_event)
+            command_object.run(context, args, self)
+
+            if self.current_context:
+                context = self.get(self.current_context)
+            post_event = Event(self, current_context=context, command_args=args)
+            self.trigger(command, post_event)
+        except InvalidContextException, e:
+            self.message("%s" % e)
             sys.exit(1)
-
-        # check if there is a current context before calling get()
-        context = None
-        if self.current_context:
-            context = self.get(self.current_context)
-
-        # run the command
-        command_object = this_command(
-            command,
-            context,
-            self,
-            command_args,
-            remaining_args
-        )
-
-        # actually run the command
-        pre_event = Event(self, current_context=context, command_args=args)
-        self.trigger("%s.pre" % command, pre_event)
-        command_object.run(context, args, self)
-
-        if self.current_context:
-            context = self.get(self.current_context)
-        post_event = Event(self, current_context=context, command_args=args)
-        self.trigger(command, post_event)
 
     def switch(self, context):
         """
@@ -278,7 +287,7 @@ class Contexts(Observable):
 
         new_context = self.get(context)
         if not new_context:
-            raise Exception('Invalid context: %s' % context)
+            raise InvalidContextException('Invalid context: %s' % context)
 
         self.current_context = context
         fp = open(self.get_contexts_data_file(), 'w')
