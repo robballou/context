@@ -1,3 +1,4 @@
+import sys
 from context.commands import Command
 
 class Switch(Command):

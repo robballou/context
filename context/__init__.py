@@ -267,6 +267,12 @@ class Contexts(Observable):
                 remaining_args
             )
 
+            # catch cases where the switch is to an invalid context
+            if command == 'switch':
+                new_context = self.get(args.subcommand[0])
+                if not new_context:
+                    raise InvalidContextException('Invalid context: %s' % args.subcommand[0])
+
             # actually run the command
             pre_event = Event(self, current_context=context, command_args=args)
             self.trigger("%s.pre" % command, pre_event)
@@ -284,7 +290,6 @@ class Contexts(Observable):
         """
         Switch contexts to the provided context key
         """
-
         new_context = self.get(context)
         if not new_context:
             raise InvalidContextException('Invalid context: %s' % context)
