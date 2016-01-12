@@ -344,6 +344,26 @@ A better example, if you have this in your context configuration:
 
 You can run: `context links dev` to open that link. This command uses `open` to handle opening the links. So if `open` knows how to handle a link, it will do that for you. For example, web links will open in a browser, folders in Finder, etc.
 
+### SSH
+
+The SSH command allows you to configure default SSH aliases for a context.
+
+```json
+"settings": {
+  "ssh": {
+    "default": "me@dev.example.com",
+    "prod": "me@example.com"
+  }
+}
+```
+
+Then:
+
+```
+context ssh
+context ssh:p
+```
+
 ### Switch
 
 Switches contexts used by this command. The command remembers this by storing this in `~/.contexts_data` as JSON data.

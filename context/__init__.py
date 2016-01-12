@@ -71,6 +71,7 @@ class Contexts(Observable):
             "context.commands.contrib.links",
             "context.commands.contrib.npm",
             "context.commands.contrib.switch",
+            "context.commands.contrib.ssh",
             "context.commands.contrib.vagrant",
             "context.commands.contrib.web",
             "context.commands.contrib.www",
