@@ -254,6 +254,32 @@ The default alias will always be used unless another alias is specified, so only
 
 You can also specify a directory in `settings.drush.directory` where the drush command will execute (normally it executes in the `web` folder).
 
+Drush aliases also support custom ssh commands instead of aliases. This is useful when you are running Docker or other hosting setups where a straight alias call may not work:
+
+```json
+{
+  "my_project": {
+    "git": "~/git/my_project",
+    "vagrant": "$git/vagrant",
+    "settings": {
+      "drush": {
+        "aliases": {
+          "default": "example.dev",
+          "prod": {
+            "ssh": "example.org",
+            "command": "some-command"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+The settings above will run the following when you use the `prod` alias:
+
+    ssh example.org "some-command [THINGS YOU PASSED TO THE DRUSH COMMAND]"
+
 ### Edit
 
 Opens the contexts file in the `$EDITOR`.

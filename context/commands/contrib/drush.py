@@ -23,7 +23,18 @@ class Drush(CommandPasser):
             alias = self.settings['aliases']['default']
             if self.command_args and self.command_args in self.settings['aliases']:
                 alias = self.settings['aliases'][self.command_args]
-            options = " @%s%s" % (alias, options)
+            if not isinstance(alias, dict):
+                options = " @%s%s" % (alias, options)
+            else:
+                self.command = self.settings['aliases'][self.command_args]['command']
+                if 'environment' in self.settings['aliases'][self.command_args].keys():
+                    self.environment = self.settings['aliases'][self.command_args]['environment']
+                if 'ssh' in self.settings['aliases'][self.command_args].keys():
+                    self.ssh = self.settings['aliases'][self.command_args]['ssh']
         except Exception, e:
             pass
         return options
+
+    # def pre_run(self, context, args, contexts, path):
+    #     if self.settings['docker']:
+    #         self.command = self.settings['docker']

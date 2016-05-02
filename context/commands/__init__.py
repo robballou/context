@@ -45,6 +45,8 @@ class Command(object):
         self.command_args = command_args
         self.remaining_args = remaining_args
         self.settings = {}
+        self.environment = {}
+        self.ssh = None
 
         # set self.settings to the command settings, if available
         try:
@@ -98,6 +100,12 @@ class CommandPasser(Command):
     """
     base_dir = None
 
+    def post_run(self, context, args, contexts, path, command):
+        pass
+
+    def pre_run(self, context, args, contexts, path):
+        pass
+
     def run(self, context, args, contexts):
         options = self.get_options()
         if self.base_dir:
@@ -108,13 +116,24 @@ class CommandPasser(Command):
             except KeyError, e:
                 path = os.path.expanduser(self.base_dir)
 
+            self.pre_run(context, args, context, path)
+
             # build the command
             command = "%s%s %s" % (
                 self.command,
                 options,
                 " ".join(args.subcommand)
             )
+            if self.environment:
+                for env in self.environment:
+                    command = "%s='%s' %s" % (env, self.environment[env], command)
+            if self.ssh:
+                command = """ssh %s "%s" """ % (self.ssh, command)
+            # self.error_message(command)
+
             print self.make_command_context_specific(
                 command,
                 path
             )
+
+            self.post_run(context, args, context, path, command)
