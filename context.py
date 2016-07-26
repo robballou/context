@@ -59,6 +59,14 @@ if __name__ == '__main__':
         help='Choose your sub commands',
         nargs="*")
     parser.add_argument(
+        '--context',
+        '-t',
+        help="Provide an alternate context to perform action against",
+        action="store",
+        dest="context",
+        default=None
+    )
+    parser.add_argument(
         '--contexts',
         '-c',
         help="The contexts data file",
