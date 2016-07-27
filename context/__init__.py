@@ -255,8 +255,11 @@ class Contexts(Observable):
             context = None
             if self.current_context:
                 context = self.get(self.current_context)
-            if args.context:
-                context = self.get(args.context)
+            try:
+                if args.context:
+                    context = self.get(args.context)
+            except AttributeError, e:
+                pass
 
             if not context:
                 raise Exception('Invalid context')
