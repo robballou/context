@@ -193,6 +193,13 @@ Commands can have context-specific settings:
 
 When a command is run, it will look in for settings in the current context. `options` is a special type of settings: these get converted to flags when running the command. So in the example above, the `drush` command will get a flag `--strict=0` added to the command.
 
+### Bash
+
+The bash command allows you to execute a bash command in the `git` directory:
+
+    # run the resources/scripts/test.sh script
+    context bash resources/scripts/test.sh
+
 ### Bundler
 
 The bundler command allows you to execute a command with Bundler within the `theme` directory for your context. Example:
