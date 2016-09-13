@@ -59,6 +59,7 @@ class Contexts(Observable):
 
         # default commands to load
         commands = [
+            "context.commands.contrib.bash",
             "context.commands.contrib.bundler",
             "context.commands.contrib.clear",
             "context.commands.contrib.contexts",
