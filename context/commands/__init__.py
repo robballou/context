@@ -129,7 +129,6 @@ class CommandPasser(Command):
                     command = "%s='%s' %s" % (env, self.environment[env], command)
             if self.ssh:
                 command = """ssh %s "%s" """ % (self.ssh, command)
-            # self.error_message(command)
 
             print self.make_command_context_specific(
                 command,
