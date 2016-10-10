@@ -65,6 +65,7 @@ class Contexts(Observable):
             "context.commands.contrib.contexts",
             "context.commands.contrib.current",
             "context.commands.contrib.django",
+            "context.commands.contrib.docker",
             "context.commands.contrib.drush",
             "context.commands.contrib.edit",
             "context.commands.contrib.git",
@@ -107,6 +108,9 @@ class Contexts(Observable):
             if 'current_context' in contexts_data:
                 self.current_context = contexts_data['current_context']
 
+    def file_exists(self, filename, context):
+        path = os.path.expanduser(os.path.join(context['git'], filename))
+        return os.path.exists(path)
 
     def get(self, context=None):
         """Get a specific context"""
