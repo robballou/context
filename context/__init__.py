@@ -78,6 +78,7 @@ class Contexts(Observable):
             "context.commands.contrib.vagrant",
             "context.commands.contrib.web",
             "context.commands.contrib.www",
+            "context.commands.contrib.z",
         ]
 
         if self.configured_commands:

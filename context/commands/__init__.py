@@ -130,6 +130,7 @@ class CommandPasser(Command):
             if self.ssh:
                 command = """ssh %s "%s" """ % (self.ssh, command)
 
+            # self.error_message(command)
             print self.make_command_context_specific(
                 command,
                 path
