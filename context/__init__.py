@@ -212,14 +212,19 @@ class Contexts(Observable):
             # loop through the items within the context
             for setting in contexts[context]:
                 this_setting = contexts[context][setting]
+                # parse the string
                 if isinstance(this_setting, basestring):
                     this_setting = self.parse_variables(this_setting, contexts[context])
                 else:
                     for subsetting in this_setting:
-                        this_subsetting = this_setting[subsetting]
-                        if isinstance(this_subsetting, basestring):
-                            this_subsetting = self.parse_variables(this_subsetting, contexts[context])
-                        this_setting[subsetting] = this_subsetting
+                        # lists don't like this
+                        try:
+                            this_subsetting = this_setting[subsetting]
+                            if isinstance(this_subsetting, basestring):
+                                this_subsetting = self.parse_variables(this_subsetting, contexts[context])
+                            this_setting[subsetting] = this_subsetting
+                        except TypeError:
+                            pass
                 contexts[context][setting] = this_setting
         return contexts
 

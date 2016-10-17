@@ -28,7 +28,6 @@ class DockerSwitch(Plugin):
 
     def are_containers_running(self, context):
         """Check if there are containers for this context running"""
-
         # we don't care if they are running when running drocker, it will
         # handle it for us...
         if 'containers' not in context and context['docker'] == 'drocker':
@@ -42,10 +41,10 @@ class DockerSwitch(Plugin):
 
         return False
 
-    def get_running_containers(self):
+    def get_running_containers(self, context=None):
         """Get a list of running containers"""
         output = subprocess.check_output("docker ps", shell=True)
-        reg = re.compile(r'.+\s(\S+)$')
+        reg = re.compile(r'^.+\s(\S+)$')
         containers = []
         first_line = True
         for line in output.splitlines():
@@ -62,7 +61,6 @@ class DockerSwitch(Plugin):
         Catch when a user is switching contexts and see if the VM for that
         context is running
         """
-
         # if the context is being switched to the current context, skip
         if event.attributes['command_args'].subcommand and event.attributes['command_args'].subcommand[0] == event.context.current_context:
             return
@@ -83,17 +81,17 @@ class DockerSwitch(Plugin):
         Catch when a user has switched contexts and see if the VM for the new
         context is running
         """
-
         # check vbox manage
-        running_containers = self.get_running_containers()
+        running_containers = self.get_running_containers(event.attributes['current_context'])
 
         # try to see if the new VM is running and turn it on
         try:
             if event.attributes['current_context'] and 'docker' in event.attributes['current_context']:
-                sys.stderr.write("The containers for the context %s are not running. Do you want to start it? [Y/n] " % event.context.current_context)
-                answer = sys.stdin.readline()
-                if self.answer_is_affirmative(answer):
-                    self.message("Starting containers")
-                    event.context.run_command('docker', Namespace(subcommand=['up']))
+                if not self.are_containers_running(event.attributes['current_context']):
+                    sys.stderr.write("The containers for the context %s are not running. Do you want to start it? [Y/n] " % event.context.current_context)
+                    answer = sys.stdin.readline()
+                    if self.answer_is_affirmative(answer):
+                        self.message("Starting containers")
+                        event.context.run_command('docker', Namespace(subcommand=['up', '-d']))
         except KeyError:
             pass
