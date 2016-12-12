@@ -54,7 +54,7 @@ class DockerSwitch(Plugin):
             match = reg.match(line)
             if match:
                 containers.append(match.group(1))
-        return containers
+        return [container.decode('utf-8') for container in containers]
 
     def switch(self, event):
         """
@@ -69,6 +69,7 @@ class DockerSwitch(Plugin):
         try:
             if event.attributes['current_context'] and self.are_containers_running(event.attributes['current_context']):
                 sys.stderr.write("The containers for the context %s are running. Do you want to halt it? [Y/n] " % event.context.current_context)
+                sys.stderr.flush()
                 answer = sys.stdin.readline()
                 if self.answer_is_affirmative(answer):
                     self.message("Halting containers")
@@ -89,6 +90,7 @@ class DockerSwitch(Plugin):
             if event.attributes['current_context'] and 'docker' in event.attributes['current_context']:
                 if not self.are_containers_running(event.attributes['current_context']):
                     sys.stderr.write("The containers for the context %s are not running. Do you want to start it? [Y/n] " % event.context.current_context)
+                    sys.stderr.flush()
                     answer = sys.stdin.readline()
                     if self.answer_is_affirmative(answer):
                         self.message("Starting containers")

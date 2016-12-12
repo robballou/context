@@ -14,9 +14,10 @@ if [[ -n "$CONTEXT_HOME" ]]; then
 fi
 
 if [[ "$DIR" = "empty" ]]; then
-	echo "Cannot find context. Please set CONTEXT_HOME"
+	2>&1 echo "Cannot find context. Please set CONTEXT_HOME"
+	exit 1
 else
-	response=$(python $DIR/context.py "$@")
+	response=$(python -u $DIR/context.py "$@")
 	if [[ -n "$response" ]]; then
 		eval $response
 	fi

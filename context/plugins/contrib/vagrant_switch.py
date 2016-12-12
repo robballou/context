@@ -29,13 +29,13 @@ class VagrantSwitch(Plugin):
     def get_running_vms(self):
         """Get a list of running VMs"""
         output = subprocess.check_output("VBoxManage list runningvms", shell=True)
-        reg = re.compile(r'"(?P<vm>[^"]+)"')
+        reg = re.compile(b'"(?P<vm>[^"]+)"')
         vms = []
         for line in output.splitlines():
             match = reg.match(line)
             if match:
                 vms.append(match.group('vm'))
-        return vms
+        return [vm.decode('utf-8') for vm in vms]
 
     def switch(self, event):
         """
@@ -56,6 +56,7 @@ class VagrantSwitch(Plugin):
         try:
             if event.attributes['current_context'] and event.attributes['current_context']['vm'] in running_vms:
                 sys.stderr.write("The VM for the context %s is running. Do you want to halt it? [Y/n] " % event.context.current_context)
+                sys.stderr.flush()
                 answer = sys.stdin.readline()
                 if self.answer_is_affirmative(answer):
                     self.message("Halting VM")
@@ -76,6 +77,7 @@ class VagrantSwitch(Plugin):
         try:
             if event.attributes['current_context'] and event.attributes['current_context']['vm'] not in running_vms:
                 sys.stderr.write("The VM for the context %s is not running. Do you want to start it? [Y/n] " % event.context.current_context)
+                sys.stderr.flush()
                 answer = sys.stdin.readline()
                 if self.answer_is_affirmative(answer):
                     self.message("Starting VM")
