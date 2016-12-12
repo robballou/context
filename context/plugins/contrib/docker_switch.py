@@ -44,7 +44,7 @@ class DockerSwitch(Plugin):
     def get_running_containers(self, context=None):
         """Get a list of running containers"""
         output = subprocess.check_output("docker ps", shell=True)
-        reg = re.compile(r'^.+\s(\S+)$')
+        reg = re.compile(b'^.+\s(\S+)$')
         containers = []
         first_line = True
         for line in output.splitlines():

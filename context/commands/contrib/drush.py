@@ -15,7 +15,7 @@ class Drush(CommandPasser):
         # try to see if there is an alternate directory location
         try:
             self.base_dir = self.settings['directory']
-        except Exception, e:
+        except Exception as e:
             pass
 
         # try to add the alias
@@ -31,7 +31,7 @@ class Drush(CommandPasser):
                     self.environment = self.settings['aliases'][self.command_args]['environment']
                 if 'ssh' in self.settings['aliases'][self.command_args].keys():
                     self.ssh = self.settings['aliases'][self.command_args]['ssh']
-        except Exception, e:
+        except Exception as e:
             pass
         return options
 

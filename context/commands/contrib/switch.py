@@ -6,4 +6,4 @@ class Switch(Command):
     alias = 's'
 
     def run(self, context, args, contexts):
-        contexts.switch(args.subcommand[0])
+        contexts.switch(args.subcommand[0], args)

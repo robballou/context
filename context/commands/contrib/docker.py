@@ -13,5 +13,7 @@ class Docker(CommandPasser):
                 self.command = './drocker'
         elif context['docker'] == 'compose':
             self.command = 'docker-compose'
+            if args.subcommand[0] == 'up':
+                args.subcommand.append('-d')
 
         super(Docker, self).run(context, args, contexts)

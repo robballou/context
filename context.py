@@ -22,7 +22,7 @@ def context(args, remaining_args):
 
     try:
         contexts.run_command(args.command, args, remaining_args)
-    except Exception, e:
+    except Exception as e:
         sys.stderr.write("%s\n" % e.message)
         pp = pprint.PrettyPrinter(stream=sys.stderr)
         pp.pprint(e)
@@ -87,5 +87,12 @@ if __name__ == '__main__':
         dest="verbose",
         action="store_true",
         default=False)
+    parser.add_argument(
+        '--project',
+        '-p',
+        help="Run commands against a sub-project",
+        dest="project",
+        action="store",
+    )
     args, remaining = parser.parse_known_args()
     context(args, remaining)

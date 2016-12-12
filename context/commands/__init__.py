@@ -51,7 +51,7 @@ class Command(object):
         # set self.settings to the command settings, if available
         try:
             self.settings = context['settings'][command]
-        except Exception, e:
+        except Exception as e:
             pass
 
     def default(self, context, args, contexts):
@@ -67,7 +67,7 @@ class Command(object):
         try:
             for option in self.remaining_args:
                 options = "%s %s" % (options, option)
-        except Exception, e:
+        except Exception as e:
             pass
 
         try:
@@ -77,14 +77,14 @@ class Command(object):
                     option,
                     self.settings['options'][option]
                 )
-        except Exception, e:
+        except Exception as e:
             pass
 
         return options
 
     def make_command_context_specific(self, command, directory):
         if os.getcwd() != directory:
-            command = "pushd %s; %s; popd" % (directory, command)
+            command = "pushd %s > /dev/null; %s; popd > /dev/null" % (directory, command)
         return command
 
     def run(self, context, args, contexts):
@@ -113,7 +113,7 @@ class CommandPasser(Command):
             # git, etc) and if that fails assume this is a filesystem path
             try:
                 path = os.path.expanduser(context[self.base_dir])
-            except KeyError, e:
+            except KeyError as e:
                 path = os.path.expanduser(self.base_dir)
 
             self.pre_run(context, args, context, path)
@@ -131,9 +131,9 @@ class CommandPasser(Command):
                 command = """ssh %s "%s" """ % (self.ssh, command)
 
             # self.error_message(command)
-            print self.make_command_context_specific(
+            print(self.make_command_context_specific(
                 command,
                 path
-            )
+            ))
 
             self.post_run(context, args, context, path, command)

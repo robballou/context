@@ -15,6 +15,6 @@ class Ssh(CommandPasser):
             if self.command_args and self.command_args in self.settings:
                 host = self.settings[self.command_args]
             options = " %s%s" % (host, options)
-        except Exception, e:
+        except Exception as e:
             pass
         return options

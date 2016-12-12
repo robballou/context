@@ -14,7 +14,7 @@ class Shell(CommandPasser):
             # git, etc) and if that fails assume this is a filesystem path
             try:
                 path = os.path.expanduser(context[self.base_dir])
-            except KeyError, e:
+            except KeyError as e:
                 path = os.path.expanduser(self.base_dir)
 
             self.pre_run(context, args, context, path)
@@ -31,9 +31,9 @@ class Shell(CommandPasser):
             if self.ssh:
                 command = """ssh %s "%s" """ % (self.ssh, command)
 
-            print self.make_command_context_specific(
+            print(self.make_command_context_specific(
                 command,
                 path
-            )
+            ))
 
             self.post_run(context, args, context, path, command)

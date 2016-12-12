@@ -10,6 +10,6 @@ class Links(Command):
             for link in links:
                 self.error_message("\t%s" % link)
         elif args.subcommand[0] in context['links']:
-            print "open %s" % context['links'][args.subcommand[0]]
+            print("open %s" % context['links'][args.subcommand[0]])
         else:
-            print "echo Link not found: %s" % args.subcommand[0]
+            print("echo Link not found: %s" % args.subcommand[0])

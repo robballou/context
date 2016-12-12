@@ -4,7 +4,7 @@ import sys
 import importlib
 import re
 
-from commands import Observable, Event
+from .commands import Observable, Event
 
 class InvalidContextException(Exception):
     pass
@@ -25,6 +25,7 @@ class Contexts(Observable):
 
         # the key of the current context
         self.current_context = None
+        self.project = None
 
         # commands that have been processed and are ready to run
         self.registered_commands = {}
@@ -46,8 +47,8 @@ class Contexts(Observable):
             "context_file": "~/.contexts",
             "data_file": "~/.contexts_data"
         }
+        defaults.update(kwargs.items())
 
-        defaults = dict(defaults.items() + kwargs.items())
         for default in defaults:
             try:
                 setattr(self, default, defaults[default])
@@ -98,7 +99,7 @@ class Contexts(Observable):
                     self.command_aliases[this_command.alias] = command_name
                 except AttributeError:
                     pass
-            except ImportError, e:
+            except ImportError as e:
                 sys.stderr.write("Could not find command module: %s (%s)\n" % (command, e))
                 sys.exit(1)
 
@@ -108,6 +109,8 @@ class Contexts(Observable):
             contexts_data = json.loads(open(contexts_data_file, 'r').read())
             if 'current_context' in contexts_data:
                 self.current_context = contexts_data['current_context']
+                if 'project' in contexts_data:
+                    self.project = contexts_data['project']
 
     def file_exists(self, filename, context):
         path = os.path.expanduser(os.path.join(context['git'], filename))
@@ -163,7 +166,7 @@ class Contexts(Observable):
                 module = importlib.import_module(plugin)
                 this_plugin = getattr(module, plugin_class_name)
                 self.loaded_plugins[plugin] = this_plugin(self)
-            except Exception, e:
+            except Exception as e:
                 sys.stderr.write("Could not import plugin: %s\n\t%s\n" % (plugin, e))
                 raise e
 
@@ -176,20 +179,20 @@ class Contexts(Observable):
         """
         try:
             self.contexts = self.parse_contexts(json.loads(data))
-        except TypeError, te:
+        except TypeError as te:
             self.contexts = {}
             for contexts_item in data:
                 contexts_data = self.parse_contexts(json.loads(contexts_item))
-                for data_key, data_item in contexts_data.iteritems():
+                for data_key, data_item in contexts_data.items():
                     if data_key not in self.contexts:
                         self.contexts[data_key] = data_item
                     else:
                         try:
                             self.contexts[data_key].update(data_item)
-                        except Exception, e:
+                        except Exception as e:
                             self.contexts[data_key].extend(data_item)
 
-        except Exception, e:
+        except Exception as e:
             sys.stderr.write("Error: Could not load contexts: %s\n" % e)
             sys.exit(1)
 
@@ -213,14 +216,14 @@ class Contexts(Observable):
             for setting in contexts[context]:
                 this_setting = contexts[context][setting]
                 # parse the string
-                if isinstance(this_setting, basestring):
+                if isinstance(this_setting, str):
                     this_setting = self.parse_variables(this_setting, contexts[context])
                 else:
                     for subsetting in this_setting:
                         # lists don't like this
                         try:
                             this_subsetting = this_setting[subsetting]
-                            if isinstance(this_subsetting, basestring):
+                            if isinstance(this_subsetting, str):
                                 this_subsetting = self.parse_variables(this_subsetting, contexts[context])
                             this_setting[subsetting] = this_subsetting
                         except TypeError:
@@ -249,7 +252,7 @@ class Contexts(Observable):
             try:
                 command, command_args = command.split(':')
                 command_args.trim()
-            except Exception, e:
+            except Exception as e:
                 pass
 
             # check if the command is registered
@@ -270,7 +273,7 @@ class Contexts(Observable):
             try:
                 if args.context:
                     context = self.get(args.context)
-            except AttributeError, e:
+            except AttributeError as e:
                 pass
 
             if not context:
@@ -300,11 +303,11 @@ class Contexts(Observable):
                 context = self.get(self.current_context)
             post_event = Event(self, current_context=context, command_args=args)
             self.trigger(command, post_event)
-        except InvalidContextException, e:
+        except InvalidContextException as e:
             self.message("%s" % e)
             sys.exit(1)
 
-    def switch(self, context):
+    def switch(self, context, args=None):
         """
         Switch contexts to the provided context key
         """
@@ -314,6 +317,12 @@ class Contexts(Observable):
 
         self.current_context = context
         fp = open(self.get_contexts_data_file(), 'w')
-        data = json.dumps({'current_context': self.current_context})
+        project = None
+        if args and args.project:
+            project = args.project
+        data = json.dumps({
+            'current_context': self.current_context,
+            'project': project
+        })
         fp.write(data)
         fp.close()

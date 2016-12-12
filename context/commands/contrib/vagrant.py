@@ -10,9 +10,9 @@ class Vagrant(CommandPasser):
     def run(self, context, args, contexts):
         vagrant_directory = os.path.expanduser(context['vagrant'])
         if not args.subcommand:
-            print "cd %s" % vagrant_directory
+            print("cd %s" % vagrant_directory)
         elif args.subcommand[0] == 'down':
-            print self.make_command_context_specific('vagrant halt', vagrant_directory)
+            print(self.make_command_context_specific('vagrant halt', vagrant_directory))
         elif args.subcommand[0] == 'ssh' and len(args.subcommand) > 1:
             # inject --command before the subsequent commands
             args.subcommand.insert(1, '--command')

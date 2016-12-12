@@ -20,11 +20,11 @@ class Git(Command):
         git_directory = os.path.expanduser(context['git'])
         if not args.subcommand:
             if os.getcwd() != git_directory:
-                print "cd %s" % git_directory
+                print("cd %s" % git_directory)
         elif args.subcommand and args.subcommand[0] == 'edit':
-            print "$EDITOR %s" % git_directory
+            print("$EDITOR %s" % git_directory)
         elif args.subcommand and args.subcommand[0] == 'finder':
-            print "open %s" % git_directory
+            print("open %s" % git_directory)
         elif args.subcommand and (args.subcommand[0] == 'branch' or args.subcommand[0] == 'b'):
             # check if the branch is in our configuration
             if 'settings' in self.context and 'git' in self.context['settings'] and 'branch' in self.context['settings']['git']:
@@ -60,7 +60,7 @@ class Git(Command):
                     command.append(postcommand)
 
                 command_string = " && ".join(command)
-                print self.make_command_context_specific(command_string, git_directory)
+                print(self.make_command_context_specific(command_string, git_directory))
         else:
             # pass the command up to git, but run it in the correct context
-            print self.make_command_context_specific("git %s" % " ".join(args.subcommand), git_directory)
+            print(self.make_command_context_specific("git %s" % " ".join(args.subcommand), git_directory))
