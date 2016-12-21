@@ -23,7 +23,7 @@ def context(args, remaining_args):
     try:
         contexts.run_command(args.command, args, remaining_args)
     except Exception as e:
-        sys.stderr.write("%s\n" % e.message)
+        sys.stderr.write("%s\n" % e)
         pp = pprint.PrettyPrinter(stream=sys.stderr)
         pp.pprint(e)
         traceback.print_exc(file=sys.stderr)

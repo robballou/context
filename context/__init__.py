@@ -290,6 +290,9 @@ class Contexts(Observable):
 
             # catch cases where the switch is to an invalid context
             if command == 'switch':
+                if len(args.subcommand) == 0:
+                    raise InvalidContextException('No context specified')
+
                 new_context = self.get(args.subcommand[0])
                 if not new_context:
                     raise InvalidContextException('Invalid context: %s' % args.subcommand[0])
