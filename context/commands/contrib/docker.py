@@ -13,6 +13,7 @@ class Docker(CommandPasser):
                 self.command = './drocker'
         elif context['docker'] == 'compose':
             self.command = 'docker-compose'
+            # sometimes -d was getting dropped, so let's make sure it's there
             if args.subcommand[0] == 'up' and '-d' not in args.subcommand:
                 args.subcommand.append('-d')
         super(Docker, self).run(context, args, contexts)
