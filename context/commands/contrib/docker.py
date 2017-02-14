@@ -16,4 +16,6 @@ class Docker(CommandPasser):
             # sometimes -d was getting dropped, so let's make sure it's there
             if args.subcommand[0] == 'up' and '-d' not in args.subcommand:
                 args.subcommand.append('-d')
+            elif args.subcommand[0] == 'restart':
+                args.subcommand = ['down && docker-compose up -d']
         super(Docker, self).run(context, args, contexts)
