@@ -146,7 +146,7 @@ class Contexts(Observable):
         sys.stderr.write("Commands:\n")
 
         # show registered commands
-        commands = self.registered_commands.keys()
+        commands = [key for key in self.registered_commands.keys()]
         commands.sort()
         for command in commands:
             this_command = command
